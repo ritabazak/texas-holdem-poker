@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/console-client/console-client.iml" filepath="$PROJECT_DIR$/console-client/console-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/poker-engine/poker-engine.iml" filepath="$PROJECT_DIR$/poker-engine/poker-engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/texas-holdem-poker.iml" filepath="$PROJECT_DIR$/texas-holdem-poker.iml" />
+    </modules>
+  </component>
+</project>
