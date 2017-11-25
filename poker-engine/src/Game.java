@@ -1,27 +1,39 @@
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Game {
     List<Player> players = new ArrayList<>();
     private int dealer;
     protected int hand = 0;
+    protected int hands;
     protected int pot = 0;
     private int buyIn;
     private Deck deck = new Deck();
-    private Date startTime;
+    private Temporal startTime;
 
-    Game(int playerCount, int buyIn) {
+    Game(GameConfig config) {
         Random rand = new Random();
-        dealer = rand.nextInt(playerCount);
+        dealer = rand.nextInt(config.getPlayerCount());
 
-        this.buyIn = buyIn;
+        buyIn = config.getBuyIn();
+        hands = config.getHandsCount();
     }
 
     public void startTimer() {
-        startTime = new Date();
+        startTime = LocalTime.now();
     }
 
-    public long getElapsedTime() {
-        return (new Date()).getTime() - startTime.getTime();
+    public Duration getElapsedTime() {
+        if (startTime == null) {
+            return Duration.of(0, ChronoUnit.SECONDS);
+        }
+
+        return Duration.between(startTime, LocalTime.now());
     }
 
     void dealHand() {
@@ -42,5 +54,19 @@ public class Game {
 
     void shufflePlayers(){
         Collections.shuffle(players);
+    }
+
+    public List<PlayerInfo> getGameStatus() {
+        return IntStream.range(0, players.size())
+                .mapToObj(i ->
+                        new PlayerInfo(
+                                players.get(i),
+                                i == dealer,
+                                i == getSmall(),
+                                i == getBig(),
+                                hands,
+                                0
+                        )
+                ).collect(Collectors.toList());
     }
 }

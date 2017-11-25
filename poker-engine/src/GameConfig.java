@@ -15,13 +15,13 @@ public class GameConfig {
     private int smallBlind;
     private int buyIn;
     private int handsCount;
+    private int playerCount;
 
-    public GameConfig(String xmlFilePath) {
+    public GameConfig(File f) {
         try {
             JAXBContext jaxb = JAXBContext.newInstance(GameDescriptor.class);
             Unmarshaller un = jaxb.createUnmarshaller();
 
-            File f = new File(xmlFilePath);
             GameDescriptor descriptor = (GameDescriptor)un.unmarshal(f);
 
             parseDescriptor(descriptor);
@@ -29,6 +29,25 @@ public class GameConfig {
         catch (JAXBException e) {
             System.out.println(e.toString());
         }
+    }
+
+    public GameType getGameType() {
+        return gameType;
+    }
+    public int getBigBlind() {
+        return bigBlind;
+    }
+    public int getSmallBlind() {
+        return smallBlind;
+    }
+    public int getBuyIn() {
+        return buyIn;
+    }
+    public int getHandsCount() {
+        return handsCount;
+    }
+    public int getPlayerCount() {
+        return playerCount;
     }
 
     private void parseDescriptor(GameDescriptor descriptor) {
@@ -70,6 +89,7 @@ public class GameConfig {
             default:
             case "Basic":
                 gameType = GameType.BASIC;
+                playerCount = 4;
         }
     }
 }

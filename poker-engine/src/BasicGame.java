@@ -1,11 +1,13 @@
 public class BasicGame extends Game {
-    public BasicGame(int buyIn) {
-        super(4, buyIn);
+    public BasicGame(GameConfig config) {
+        super(config);
 
-        players.add(new Player(Player.Type.HUMAN, buyIn));
-        players.add(new Player(Player.Type.COMPUTER, buyIn));
-        players.add(new Player(Player.Type.COMPUTER, buyIn));
-        players.add(new Player(Player.Type.COMPUTER, buyIn));
+        int buyIn = config.getBuyIn();
+
+        players.add(new Player(Player.PlayerType.HUMAN, buyIn));
+        players.add(new Player(Player.PlayerType.COMPUTER, buyIn));
+        players.add(new Player(Player.PlayerType.COMPUTER, buyIn));
+        players.add(new Player(Player.PlayerType.COMPUTER, buyIn));
 
         shufflePlayers();
         dealHand();
