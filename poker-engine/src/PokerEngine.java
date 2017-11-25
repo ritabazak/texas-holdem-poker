@@ -43,7 +43,7 @@ public class PokerEngine {
     }
 
     public boolean isGameOn() {
-        return game != null;
+        return gameOn;
     }
 
     public void startGame() {
