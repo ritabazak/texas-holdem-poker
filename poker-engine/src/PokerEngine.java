@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.List;
 
 public class PokerEngine {
@@ -41,7 +42,6 @@ public class PokerEngine {
     public boolean isXmlLoaded() {
         return gameConfig != null;
     }
-
     public boolean isGameOn() {
         return gameOn;
     }
@@ -53,5 +53,31 @@ public class PokerEngine {
 
     List<PlayerInfo> getGameStatus() {
         return game.getGameStatus();
+    }
+    public int getHandsCount() {
+        return game.getHandsCount();
+    }
+    public int getBigBlind() {
+        return game.getBigBlind();
+    }
+    public int getSmallBlind() {
+        return game.getSmallBlind();
+    }
+    public Duration getElapsedTime() {
+        return game.getElapsedTime();
+    }
+    public int getHandsPlayed() {
+        return game.getHandsPlayed();
+    }
+    public int getMaxPot() {
+        return game.getMaxPot();
+    }
+
+    public List<Integer> getHumanIndices() {
+        return game.getHumanIndices();
+    }
+
+    public void addBuyIn(int playerIndex) {
+        game.addBuyIn(playerIndex);
     }
 }

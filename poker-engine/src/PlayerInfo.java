@@ -12,14 +12,12 @@ public final class PlayerInfo {
     private final int chips;
     private final int buyIns;
     private final int handsWon;
-    private final int totalHands;
     private final int bet;
 
     public PlayerInfo(Player player,
                       boolean isDealer,
                       boolean isSmall,
                       boolean isBig,
-                      int totalHands,
                       int bet) {
         this.type = player.getType().toPlayerInfo();
         this.chips = player.getChips();
@@ -39,7 +37,6 @@ public final class PlayerInfo {
             this.state = PlayerState.NONE;
         }
 
-        this.totalHands = totalHands;
         this.bet = bet;
     }
 
@@ -60,8 +57,5 @@ public final class PlayerInfo {
     }
     public int getHandsWon() {
         return handsWon;
-    }
-    public int getTotalHands() {
-        return totalHands;
     }
 }

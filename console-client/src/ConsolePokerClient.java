@@ -1,14 +1,12 @@
-import com.sun.xml.internal.xsom.impl.scd.Iterators;
-
 import java.io.FileNotFoundException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.toList;
+
 public class ConsolePokerClient {
-    private Scanner scanner = new Scanner(System.in);
     private PokerEngine engine;
 
     private ConsolePokerClient() {
@@ -16,6 +14,15 @@ public class ConsolePokerClient {
     }
 
     private void launch() {
+        //TODO: Remove this
+        try {
+            engine.loadConfigFile("./ex1-basic.xml");
+        }
+        catch (FileNotFoundException | BadFileExtensionException | InvalidHandsCountException | InvalidBlindsException e) {
+            e.printStackTrace();
+        }
+        engine.startGame();
+
         while (true) {
             showMenu();
         }
@@ -91,9 +98,10 @@ public class ConsolePokerClient {
                     String type = player.getType() == PlayerInfo.PlayerType.HUMAN ? "H" : "C";
                     String state =
                             (player.getState() == PlayerInfo.PlayerState.DEALER) ? "D" :
-                                    (player.getState() == PlayerInfo.PlayerState.BIG) ? "B" :
-                                            (player.getState() == PlayerInfo.PlayerState.SMALL) ? "S" : "";
-                    String wins = String.format("%d/%d", player.getHandsWon(), player.getTotalHands());
+                                    (player.getState() == PlayerInfo.PlayerState.BIG) ? "B (" + engine.getBigBlind() + ")" :
+                                            (player.getState() == PlayerInfo.PlayerState.SMALL) ? "S (" + engine.getSmallBlind() + ")" :
+                                                    "";
+                    String wins = String.format("%d/%d", player.getHandsWon(), engine.getHandsCount());
 
                     return Arrays.asList(
                             "• • • • • • • • • • •",
@@ -105,15 +113,15 @@ public class ConsolePokerClient {
                             "• • • • • • • • • • •"
                     );
                 })
-                .collect(Collectors.toList());
+                .collect(toList());
 
         List<String> firstLines = IntStream.range(0, 7)
                 .mapToObj(i -> playerLines.get(0).get(i) + "      " + playerLines.get(1).get(i))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         List<String> secondLines = IntStream.range(0, 7)
                 .mapToObj(i -> playerLines.get(2).get(i) + "      " + playerLines.get(3).get(i))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         System.out.println("");
 
@@ -156,11 +164,19 @@ public class ConsolePokerClient {
     }
 
     private void displayGameStatistics() {
+        Duration elapsed = engine.getElapsedTime();
 
+        System.out.println(String.format("Time elapsed: %02d:%02d", elapsed.getSeconds() / 60, elapsed.getSeconds() % 60));
+        System.out.println(String.format("Hands played: %d/%d", engine.getHandsPlayed(), engine.getHandsCount()));
+        System.out.println(String.format("Max pot: %d", engine.getMaxPot()));
+
+        displayGameStatus();
     }
 
     private void buyIn() {
+        engine.addBuyIn(engine.getHumanIndices().get(0));
 
+        System.out.println("Chips were added");
     }
 
     private void endGame() {
