@@ -51,17 +51,11 @@ public class PokerEngine {
         game.startTimer();
     }
 
-    List<PlayerInfo> getGameStatus() {
+    List<PlayerGameInfo> getGameStatus() {
         return game.getGameStatus();
     }
     public int getHandsCount() {
         return game.getHandsCount();
-    }
-    public int getBigBlind() {
-        return game.getBigBlind();
-    }
-    public int getSmallBlind() {
-        return game.getSmallBlind();
     }
     public Duration getElapsedTime() {
         return game.getElapsedTime();
@@ -79,5 +73,71 @@ public class PokerEngine {
 
     public void addBuyIn(int playerIndex) {
         game.addBuyIn(playerIndex);
+    }
+
+    public List<PlayerHandInfo> getHandStatus() {
+        return game.getHandStatus();
+    }
+
+    public List<Card> getCommunityCards() {
+        return game.getCommunityCards();
+    }
+
+    public void startHand() {
+        if (game.startHand() == getHandsCount()) {
+            gameOn = false;
+        }
+    }
+
+    public int getPot() {
+        return game.getPot();
+    }
+
+    public boolean handInProgress() {
+        return game.handInProgress();
+    }
+
+    public boolean isHumanTurn() {
+        return game.isHumanTurn();
+    }
+
+    public int getMaxBet() {
+        return game.getMaxBet();
+    }
+
+    public List<PlayerHandInfo> getWinners() {
+        return game.getWinners();
+    }
+
+    public boolean isBetActive() {
+        return game.isBetActive();
+    }
+
+    public void fold() {
+        game.fold();
+    }
+
+    public void raise(int raiseAmount) {
+        game.raise(raiseAmount);
+    }
+
+    public void placeBet(int bet) {
+        game.placeBet(bet);
+    }
+
+    public void call() {
+        game.call();
+    }
+
+    public void check() {
+        game.check();
+    }
+
+    public void playComputerTurn() {
+        game.playComputerTurn();
+    }
+
+    public void endGame() {
+        gameOn = false;
     }
 }

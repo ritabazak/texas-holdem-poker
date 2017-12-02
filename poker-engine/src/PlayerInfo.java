@@ -1,28 +1,40 @@
-public final class PlayerInfo {
+public class PlayerInfo {
     public enum PlayerType {
-        HUMAN, COMPUTER
-    }
+        HUMAN, COMPUTER;
 
+        public String toShortString() {
+             return (this == HUMAN) ? "H" : "C";
+        }
+    }
     public enum PlayerState {
-        NONE, DEALER, SMALL, BIG
+        NONE, DEALER, SMALL, BIG;
+
+        public String toShortString() {
+            switch (this) {
+                case DEALER:
+                    return "D";
+                case BIG:
+                    return "B";
+                case SMALL:
+                    return "S";
+                default:
+                case NONE:
+                    return "";
+            }
+        }
     }
 
     private final PlayerType type;
     private final PlayerState state;
     private final int chips;
-    private final int buyIns;
-    private final int handsWon;
-    private final int bet;
+
 
     public PlayerInfo(Player player,
                       boolean isDealer,
                       boolean isSmall,
-                      boolean isBig,
-                      int bet) {
+                      boolean isBig) {
         this.type = player.getType().toPlayerInfo();
         this.chips = player.getChips();
-        this.buyIns = player.getBuyIns();
-        this.handsWon = player.getWins();
 
         if (isDealer) {
             this.state = PlayerState.DEALER;
@@ -36,8 +48,6 @@ public final class PlayerInfo {
         else {
             this.state = PlayerState.NONE;
         }
-
-        this.bet = bet;
     }
 
     public PlayerType getType() {
@@ -46,16 +56,7 @@ public final class PlayerInfo {
     public PlayerState getState() {
         return state;
     }
-    public int getBet() {
-        return bet;
-    }
     public int getChips() {
         return chips;
-    }
-    public int getBuyIns() {
-        return buyIns;
-    }
-    public int getHandsWon() {
-        return handsWon;
     }
 }

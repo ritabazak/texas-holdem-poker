@@ -3,6 +3,11 @@ import java.util.List;
 
 
 public class Player {
+
+    public void subtractChips(int chips) {
+        this.chips -= chips;
+    }
+
     public enum PlayerType {
         HUMAN, COMPUTER;
 
@@ -17,15 +22,12 @@ public class Player {
         }
     }
 
-    private PlayerType type;
-    private int chips;
-    private int wins = 0;
-    private int buyIns = 1;
-    private List<Card> cards = new ArrayList<>();
+    protected PlayerType type;
+    protected int chips;
 
-    public Player(Player.PlayerType type, int buyIn) {
+    protected Player(Player.PlayerType type, int chips) {
         this.type = type;
-        this.chips = buyIn;
+        this.chips = chips;
     }
 
     public PlayerType getType() {
@@ -36,26 +38,7 @@ public class Player {
         return chips;
     }
 
-    public void addChips(int buyIn) {
-        chips += buyIn;
-        buyIns++;
-    }
-
-    public int getBuyIns() {
-        return buyIns;
-    }
-
-    public int getWins() {
-        return wins;
-    }
-
-    public void addWin() {
-        wins++;
-    }
-
-    public void dealCards(Card cardA, Card cardB) {
-        cards.clear();
-        cards.add(cardA);
-        cards.add(cardB);
+    public void addChips(int chips) {
+        this.chips += chips;
     }
 }

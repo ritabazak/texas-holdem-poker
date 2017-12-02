@@ -7,9 +7,13 @@ public class Deck {
     private List<Card> deck = new LinkedList<>();
 
     public Deck() {
-        for (Card.Suit suit: Card.Suit.values()) {
-            for (Card.Rank rank: Card.Rank.values()) {
-                deck.add(new Card(rank, suit));
+        for (Card.Suit suit : Card.Suit.values()) {
+            if (suit != Card.Suit.NONE) {
+                for (Card.Rank rank : Card.Rank.values()) {
+                    if (rank != Card.Rank.NONE) {
+                        deck.add(new Card(rank, suit));
+                    }
+                }
             }
         }
     }

@@ -8,15 +8,15 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toList;
 
 public abstract class Game {
-    List<Player> players = new ArrayList<>();
+    List<GamePlayer> players = new ArrayList<>();
     private int dealer;
-    protected int hand = 0;
+    protected int handIndex = 0;
     protected int handsCount;
     private int buyIn;
-    private Deck deck = new Deck();
     private Temporal startTime;
     private int smallBlind;
     private int bigBlind;
+    private Hand hand;
 
     Game(GameConfig config) {
         Random rand = new Random();
@@ -31,14 +31,6 @@ public abstract class Game {
 
     public void startTimer() {
         startTime = LocalTime.now();
-    }
-
-    void dealHand() {
-        deck = new Deck();
-
-        for (Player player: players) {
-            player.dealCards(deck.dealCard(), deck.dealCard());
-        }
     }
 
     public Duration getElapsedTime() {
@@ -64,22 +56,24 @@ public abstract class Game {
         return handsCount;
     }
     public int getHandsPlayed() {
-        return hand;
+        return handIndex;
     }
     public int getMaxPot() {
         return players.stream()
-                .mapToInt(Player::getBuyIns)
+                .mapToInt(GamePlayer::getBuyIns)
                 .sum() * buyIn;
     }
-    public List<PlayerInfo> getGameStatus() {
+    public List<PlayerHandInfo> getHandStatus(){
+        return hand.getHandStatus();
+    }
+    public List<PlayerGameInfo> getGameStatus() {
         return IntStream.range(0, players.size())
                 .mapToObj(i ->
-                        new PlayerInfo(
+                        new PlayerGameInfo(
                                 players.get(i),
                                 i == dealer,
                                 i == getSmallIndex(),
-                                i == getBigIndex(),
-                                0
+                                i == getBigIndex()
                         )
                 ).collect(toList());
     }
@@ -91,11 +85,64 @@ public abstract class Game {
     }
 
     public void addBuyIn(int playerIndex) {
-        players.get(playerIndex).addChips(buyIn);
+        players.get(playerIndex).addBuyIn(buyIn);
     }
 
     void shufflePlayers(){
         Collections.shuffle(players);
     }
 
+    public int startHand() {
+        hand = new Hand(players, dealer, smallBlind, bigBlind, handIndex == 0 ? 0 : hand.getPotRemainder());
+        dealer = getSmallIndex();
+        return ++handIndex;
+    }
+
+    public List<Card> getCommunityCards() {
+        return hand.getCommunityCards();
+    }
+
+    public int getPot() {
+        return hand.getPot();
+    }
+
+    public boolean handInProgress(){
+        return hand != null && hand.handInProgress();
+    }
+
+    public boolean isHumanTurn() {
+        return hand.isHumanTurn();
+    }
+
+    public int getMaxBet() {
+        return hand.getMaxBet();
+    }
+
+    public List<PlayerHandInfo> getWinners() {
+        return hand.getWinners();
+    }
+
+    public boolean isBetActive() {
+        return hand.isBetActive();
+    }
+
+    public void playComputerTurn() {
+        hand.playComputerTurn();
+    }
+
+    public void fold() {
+        hand.fold();
+    }
+    public void placeBet(int bet) {
+        hand.placeBet(bet);
+    }
+    public void raise(int raiseAmount) {
+        hand.raise(raiseAmount);
+    }
+    public void call() {
+        hand.call();
+    }
+    public void check() {
+        hand.check();
+    }
 }
