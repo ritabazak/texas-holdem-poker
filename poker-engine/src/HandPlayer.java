@@ -1,4 +1,3 @@
-import com.rundef.poker.HandEquity;
 import com.rundef.poker.HandRanking;
 
 public class HandPlayer extends Player {
@@ -7,7 +6,7 @@ public class HandPlayer extends Player {
     private int bet;
     private boolean folded = false;
     private final GamePlayer originalPlayer;
-    private int equity = -1;
+    private boolean winner;
     private String ranking = "";
 
     public HandPlayer(GamePlayer gamePlayer, Card firstCard, Card secondCard) {
@@ -54,13 +53,13 @@ public class HandPlayer extends Player {
         originalPlayer.addWin();
     }
 
-    public void setResults(HandEquity equity, HandRanking ranking) {
-        this.equity = equity.getEquity();
+    public void setResults(boolean winner, HandRanking ranking) {
+        this.winner = winner;
         this.ranking = ranking.toString();
     }
 
-    public int getEquity() {
-        return equity;
+    public boolean isWinner() {
+        return winner;
     }
     public String getRanking() {
         return ranking;

@@ -1,8 +1,6 @@
 import com.rundef.poker.EquityCalculator;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.joining;
@@ -228,32 +226,36 @@ public class Hand {
     }
 
     private void finish() {
-        EquityCalculator calculator = new EquityCalculator();
         try {
+            EquityCalculator calculator = new EquityCalculator();
+
             calculator.setBoardFromString(communityCards.stream().map(Card::toShortString).collect(joining()));
 
             List<HandPlayer> activePlayers = players.stream().filter(player -> !player.isFolded()).collect(toList());
 
             activePlayers.stream()
                     .map(player -> player.getFirstCard().toShortString() + player.getSecondCard().toShortString())
-                    .forEach(hand -> {
-                        try { calculator.addHand(com.rundef.poker.Hand.fromString(hand)); }
+                    .forEach(handStr -> {
+                        try { calculator.addHand(com.rundef.poker.Hand.fromString(handStr)); }
                         catch (Exception ignored) {} // Will never happen since we always send 4 characters
                     });
 
             calculator.calculate();
 
+            final Set<Integer> winnerIndices = new HashSet<>(calculator.getWinningHands());
+
             IntStream.range(0, activePlayers.size())
-                    .forEach(i -> activePlayers.get(i).setResults(calculator.getHandEquity(i), calculator.getHandRanking(i)));
+                    .forEach(i -> activePlayers.get(i).setResults(
+                            winnerIndices.contains(i),
+                            calculator.getHandRanking(i)
+                    ));
 
-            int maxEquity = activePlayers.stream().mapToInt(HandPlayer::getEquity).max().orElse(0);
-
-            winners = activePlayers.stream().filter(player -> player.getEquity() == maxEquity).collect(toList());
+            winners = activePlayers.stream().filter(HandPlayer::isWinner).collect(toList());
 
             remainder = pot % winners.size();
             winners.forEach(winner -> winner.addChips(pot / winners.size()));
             pot = remainder;
         }
-        catch (Exception e) {} // Will never happen since we always send 10 characters (5 cards)
+        catch (Exception ignored) {} // Will never happen since we always send 10 characters (5 cards)
     }
 }
