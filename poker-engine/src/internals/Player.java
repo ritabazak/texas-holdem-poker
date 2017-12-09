@@ -3,11 +3,6 @@ package internals;
 import immutables.PlayerInfo;
 
 public class Player {
-
-    public void subtractChips(int chips) {
-        this.chips -= chips;
-    }
-
     public enum PlayerType {
         HUMAN, COMPUTER;
 
@@ -38,7 +33,11 @@ public class Player {
         return chips;
     }
 
-    public void addChips(int chips) {
+    protected void addChips(int chips) {
         this.chips += chips;
+    }
+
+    protected void subtractChips(int chips) {
+        this.chips -= chips;
     }
 }

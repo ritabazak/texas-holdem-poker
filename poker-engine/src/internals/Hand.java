@@ -47,8 +47,6 @@ public class Hand {
     private int turn;
     private int cycleStart;
     private int dealer;
-    private final int smallBlind;
-    private final int bigBlind;
     private HandPhase phase = HandPhase.PRE_FLOP;
     private List<HandPlayer> winners = new LinkedList<>();
     private int remainder = 0;
@@ -61,13 +59,13 @@ public class Hand {
                 deck.dealCard(),
                 deck.dealCard()
         );
+
         this.players = players.stream()
                 .map(player -> new HandPlayer(player, deck.dealCard(), deck.dealCard()))
                 .collect(toList());
+
         this.pot = pot;
         this.dealer = dealer;
-        this.smallBlind = smallBlind;
-        this.bigBlind = bigBlind;
 
         turn = getSmallIndex();
         placeBet(smallBlind);
@@ -135,8 +133,12 @@ public class Hand {
         return phase != HandPhase.FINISH;
     }
 
+    private HandPlayer getCurrentPlayer() {
+        return players.get(turn);
+    }
+
     public boolean isHumanTurn() {
-        return players.get(turn).getType() == Player.PlayerType.HUMAN;
+        return getCurrentPlayer().getType() == Player.PlayerType.HUMAN;
     }
 
     public int getCurrentBet() {
@@ -148,9 +150,17 @@ public class Hand {
     }
 
     public int getMaxBet() {
-        return players.stream()
-                .mapToInt(player -> player.getChips() + player.getBet())
-                .min().orElse(Integer.MAX_VALUE) - getCurrentBet();
+        return Math.min(
+                players
+                        .stream()
+                        .mapToInt(player -> player.getChips() + player.getBet())
+                        .min().orElse(Integer.MAX_VALUE) - getCurrentBet(),
+
+                players
+                        .stream()
+                        .mapToInt(HandPlayer::getBet)
+                        .sum() + pot
+        ) - getCurrentBet();
     }
 
     public void playComputerTurn() {
@@ -165,40 +175,49 @@ public class Hand {
     private void nextTurn() {
         if (players.stream().allMatch(player -> player.getType() == Player.PlayerType.COMPUTER || player.isFolded())) {
             phase = HandPhase.FINISH;
-            splitPotToComputers();
+
+            winners = players
+                    .stream()
+                    .filter(player -> player.getType() == Player.PlayerType.COMPUTER)
+                    .filter(player -> !player.isFolded())
+                    .collect(toList());
+
+            splitPot();
+            return;
         }
-        else {
-            do {
-                turn = (turn + 1) % players.size();
+
+        do {
+            turn = (turn + 1) % players.size();
+        }
+        while (getCurrentPlayer().isFolded());
+
+        if (turn == cycleStart) {
+            pot += players.stream().mapToInt(HandPlayer::collectBet).sum();
+
+            cycleStart = turn;
+
+            if (players.stream().anyMatch(player -> !player.isFolded() && player.getChips() == 0)) {
+                phase = HandPhase.FINISH;
             }
-            while (players.get(turn).isFolded());
-
-            if (turn == cycleStart) {
-                pot += players.stream().mapToInt(HandPlayer::collectBet).sum();
-                cycleStart = turn;
-
-                if (players.stream().anyMatch(player -> !player.isFolded() && player.getChips() == 0)) {
-                    phase = HandPhase.FINISH;
-                }
-                else {
-                    phase = phase.next();
-                }
-            }
-
-            if (phase == HandPhase.FINISH) {
-                finish();
+            else {
+                phase = phase.next();
             }
         }
+
+        if (phase == HandPhase.FINISH) {
+            finish();
+        }
+
     }
 
     public void fold() {
-        players.get(turn).fold();
+        getCurrentPlayer().fold();
         pot += players.get(turn).collectBet();
         nextTurn();
     }
 
     public void placeBet(int amount) {
-        players.get(turn).placeBet(amount);
+        getCurrentPlayer().placeBet(amount);
         cycleStart = turn;
         nextTurn();
     }
@@ -216,28 +235,24 @@ public class Hand {
         nextTurn();
     }
 
-    private void splitPotToComputers() {
-        pot += players.stream().mapToInt(HandPlayer::collectBet).sum();
-
-        winners = players.stream()
-                .filter(player -> player.getType() == Player.PlayerType.COMPUTER && !player.isFolded())
-                .collect(toList());
-
-        remainder = pot % winners.size();
-
-        winners.forEach(player -> player.addChips(pot / winners.size()));
-        pot = remainder;
-    }
-
     private void finish() {
         try {
             EquityCalculator calculator = new EquityCalculator();
 
-            calculator.setBoardFromString(communityCards.stream().map(Card::toShortString).collect(joining()));
+            calculator.setBoardFromString(
+                    communityCards
+                            .stream()
+                            .map(Card::toShortString)
+                            .collect(joining())
+            );
 
-            List<HandPlayer> activePlayers = players.stream().filter(player -> !player.isFolded()).collect(toList());
+            List<HandPlayer> activePlayers = players
+                    .stream()
+                    .filter(player -> !player.isFolded())
+                    .collect(toList());
 
-            activePlayers.stream()
+            activePlayers
+                    .stream()
                     .map(player -> player.getFirstCard().toShortString() + player.getSecondCard().toShortString())
                     .forEach(handStr -> {
                         try { calculator.addHand(com.rundef.poker.Hand.fromString(handStr)); }
@@ -254,12 +269,19 @@ public class Hand {
                             calculator.getHandRanking(i)
                     ));
 
-            winners = activePlayers.stream().filter(HandPlayer::isWinner).collect(toList());
+            winners = activePlayers
+                    .stream()
+                    .filter(HandPlayer::isWinner)
+                    .collect(toList());
 
-            remainder = pot % winners.size();
-            winners.forEach(winner -> winner.addChips(pot / winners.size()));
-            pot = remainder;
+            splitPot();
         }
         catch (Exception ignored) {} // Will never happen since we always send 10 characters (5 cards)
+    }
+
+    private void splitPot() {
+        remainder = pot % winners.size();
+        winners.forEach(winner -> winner.win(pot / winners.size()));
+        pot = remainder;
     }
 }

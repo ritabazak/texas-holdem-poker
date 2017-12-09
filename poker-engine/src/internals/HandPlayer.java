@@ -6,9 +6,9 @@ import immutables.Card;
 public class HandPlayer extends Player {
     private final Card firstCard;
     private final Card secondCard;
+    private final GamePlayer originalPlayer;
     private int bet;
     private boolean folded = false;
-    private final GamePlayer originalPlayer;
     private boolean winner;
     private String ranking = "";
 
@@ -16,6 +16,7 @@ public class HandPlayer extends Player {
         super(gamePlayer.type, gamePlayer.chips);
 
         originalPlayer = gamePlayer;
+
         this.firstCard = firstCard;
         this.secondCard = secondCard;
     }
@@ -39,7 +40,6 @@ public class HandPlayer extends Player {
 
     public void placeBet(int amount) {
         subtractChips(amount - bet);
-        originalPlayer.subtractChips(amount - bet);
         bet = amount;
     }
 
@@ -49,11 +49,21 @@ public class HandPlayer extends Player {
         return temp;
     }
 
+    public void win(int winnings) {
+        addChips(winnings);
+        originalPlayer.addWin();
+    }
+
     @Override
-    public void addChips(int chips) {
+    protected void addChips(int chips) {
         super.addChips(chips);
         originalPlayer.addChips(chips);
-        originalPlayer.addWin();
+    }
+
+    @Override
+    protected void subtractChips(int chips) {
+        super.subtractChips(chips);
+        originalPlayer.subtractChips(chips);
     }
 
     public void setResults(boolean winner, HandRanking ranking) {
