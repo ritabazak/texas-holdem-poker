@@ -35,6 +35,7 @@ public class Menu {
                 return sc.nextInt();
             }
             catch (InputMismatchException ignored) {
+                sc.next();
                 System.out.println("Please enter a number!");
             }
         }
