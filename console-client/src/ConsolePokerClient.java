@@ -218,6 +218,7 @@ public class ConsolePokerClient {
             System.out.println("Winning hands:");
 
             winners.forEach(winner -> {
+                System.out.print(winner.getType() == PlayerInfo.PlayerType.HUMAN ? "(Human) " : "(Computer) ");
                 System.out.print(winner.getFirstCard().toShortString() + " " + winner.getSecondCard().toShortString());
                 System.out.println(" -> " + winner.getRanking());
             });
