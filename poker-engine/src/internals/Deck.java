@@ -1,7 +1,10 @@
+package internals;
+
+import immutables.Card;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
 
 public class Deck {
     private List<Card> deck = new LinkedList<>();
@@ -22,5 +25,4 @@ public class Deck {
         Random rand = new Random();
         return deck.remove(rand.nextInt(deck.size()));
     }
-
 }

@@ -1,4 +1,7 @@
+package internals;
+
 import com.rundef.poker.HandRanking;
+import immutables.Card;
 
 public class HandPlayer extends Player {
     private final Card firstCard;

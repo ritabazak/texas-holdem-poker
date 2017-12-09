@@ -1,3 +1,9 @@
+package internals;
+
+import immutables.Card;
+import immutables.PlayerGameInfo;
+import immutables.PlayerHandInfo;
+
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -45,12 +51,6 @@ public abstract class Game {
     }
     protected int getBigIndex() {
         return (dealer + 2) % players.size();
-    }
-    public int getSmallBlind() {
-        return smallBlind;
-    }
-    public int getBigBlind() {
-        return bigBlind;
     }
     public int getHandsCount() {
         return handsCount;

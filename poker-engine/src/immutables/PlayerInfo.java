@@ -1,3 +1,7 @@
+package immutables;
+
+import internals.Player;
+
 public class PlayerInfo {
     public enum PlayerType {
         HUMAN, COMPUTER;
@@ -27,7 +31,6 @@ public class PlayerInfo {
     private final PlayerType type;
     private final PlayerState state;
     private final int chips;
-
 
     public PlayerInfo(Player player,
                       boolean isDealer,

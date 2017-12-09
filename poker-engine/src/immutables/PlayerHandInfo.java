@@ -1,9 +1,13 @@
+package immutables;
+
+import internals.HandPlayer;
+
 public class PlayerHandInfo extends PlayerInfo {
-    private int bet;
-    private Card firstCard;
-    private Card secondCard;
-    private boolean current;
-    private String ranking;
+    private final int bet;
+    private final Card firstCard;
+    private final Card secondCard;
+    private final boolean current;
+    private final String ranking;
 
     public PlayerHandInfo(HandPlayer player,
                           boolean isDealer,

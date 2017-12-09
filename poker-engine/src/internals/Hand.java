@@ -1,4 +1,8 @@
+package internals;
+
 import com.rundef.poker.EquityCalculator;
+import immutables.Card;
+import immutables.PlayerHandInfo;
 
 import java.util.*;
 import java.util.stream.IntStream;

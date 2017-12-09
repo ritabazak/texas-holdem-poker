@@ -1,3 +1,5 @@
+package internals;
+
 import xml_game_config.*;
 
 import javax.xml.bind.JAXBContext;

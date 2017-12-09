@@ -1,3 +1,5 @@
+package internals;
+
 public class BasicGame extends Game {
     public BasicGame(GameConfig config) {
         super(config);

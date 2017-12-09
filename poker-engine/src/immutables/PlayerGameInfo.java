@@ -1,3 +1,7 @@
+package immutables;
+
+import internals.GamePlayer;
+
 public class PlayerGameInfo extends PlayerInfo {
     private final int buyIns;
     private final int handsWon;

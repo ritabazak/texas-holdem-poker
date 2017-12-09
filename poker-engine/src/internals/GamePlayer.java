@@ -1,3 +1,5 @@
+package internals;
+
 public class GamePlayer extends Player {
     private int buyIns = 1;
     private int wins = 0;

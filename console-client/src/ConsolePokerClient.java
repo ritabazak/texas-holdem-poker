@@ -8,6 +8,13 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
+import exceptions.BadFileExtensionException;
+import exceptions.InvalidBlindsException;
+import exceptions.InvalidHandsCountException;
+import immutables.PlayerHandInfo;
+import immutables.PlayerInfo;
+import immutables.Card;
+
 public class ConsolePokerClient {
     private PokerEngine engine;
     private static final int BOX_WIDTH = 15;
@@ -79,7 +86,7 @@ public class ConsolePokerClient {
     private void startGame() {
         engine.startGame();
 
-        System.out.println("Game started!");
+        System.out.println("internals.Game started!");
     }
 
     private void displayGameStatus() {
