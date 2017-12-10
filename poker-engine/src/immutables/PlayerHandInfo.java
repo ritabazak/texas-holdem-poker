@@ -8,6 +8,7 @@ public class PlayerHandInfo extends PlayerInfo {
     private final Card secondCard;
     private final boolean current;
     private final String ranking;
+    private final boolean folded;
 
     public PlayerHandInfo(HandPlayer player,
                           boolean isDealer,
@@ -20,6 +21,7 @@ public class PlayerHandInfo extends PlayerInfo {
         this.current = isCurrent;
         this.bet = player.getBet();
         this.ranking = player.getRanking();
+        this.folded = player.isFolded();
 
         if (showCards) {
             this.firstCard = player.getFirstCard();
@@ -33,20 +35,19 @@ public class PlayerHandInfo extends PlayerInfo {
     public int getBet() {
         return bet;
     }
-
     public Card getFirstCard() {
         return firstCard;
     }
-
     public Card getSecondCard() {
         return secondCard;
     }
-
     public boolean isCurrent() {
         return current;
     }
-
     public String getRanking() {
         return ranking;
+    }
+    public boolean isFolded() {
+        return folded;
     }
 }

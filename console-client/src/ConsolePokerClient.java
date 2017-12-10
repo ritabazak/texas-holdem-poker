@@ -125,7 +125,12 @@ public class ConsolePokerClient {
                     infoFields.put("Type", player.getType().toShortString());
                     infoFields.put("State", player.getState().toShortString());
                     infoFields.put("Chips", Integer.toString(player.getChips()));
-                    infoFields.put("Cards", player.getFirstCard().toShortString() + " " + player.getSecondCard().toShortString());
+                    if (player.isFolded()) {
+                        infoFields.put("Cards", "FOLD");
+                    }
+                    else {
+                        infoFields.put("Cards", player.getFirstCard().toShortString() + " " + player.getSecondCard().toShortString());
+                    }
                     infoFields.put("Bet", Integer.toString(player.getBet()));
 
                     return createBox(infoFields, player.isCurrent() ? '#' : '.');
