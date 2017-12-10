@@ -86,7 +86,7 @@ public class ConsolePokerClient {
     private void startGame() {
         engine.startGame();
 
-        System.out.println("internals.Game started!");
+        System.out.println("Game started!");
     }
 
     private void displayGameStatus() {
@@ -117,7 +117,7 @@ public class ConsolePokerClient {
         System.out.println("");
     }
 
-    private void displayHandStatus(){
+    private void displayHandStatus() {
         List<List<String>> playerBoxes = engine.getHandStatus().stream()
                 .map(player -> {
                     Map<String, String> infoFields = new LinkedHashMap<>();
@@ -197,30 +197,38 @@ public class ConsolePokerClient {
         engine.startHand();
 
         while (engine.handInProgress()) {
-            if (engine.isHumanTurn()) {
-                displayHandStatus();
+            while (engine.isRoundInProgress()) {
+                if (engine.isHumanTurn()) {
+                    displayHandStatus();
 
-                switch (HandMenu.show(engine.isBetActive(), engine.getMaxBet() > 0)) {
-                    case 'F':
-                        engine.fold();
-                        break;
-                    case 'B':
-                        engine.placeBet(HandMenu.readBet(engine.getMaxBet()));
-                        break;
-                    case 'C':
-                        engine.call();
-                        break;
-                    case 'K':
-                        engine.check();
-                        break;
-                    case 'R':
-                        engine.raise(HandMenu.readRaise(engine.getMaxBet()));
-                        break;
+                    switch (HandMenu.show(engine.isBetActive(), engine.getMaxBet() > 0)) {
+                        case 'F':
+                            engine.fold();
+                            break;
+                        case 'B':
+                            engine.placeBet(HandMenu.readBet(engine.getMaxBet()));
+                            break;
+                        case 'C':
+                            engine.call();
+                            break;
+                        case 'K':
+                            engine.check();
+                            break;
+                        case 'R':
+                            engine.raise(HandMenu.readRaise(engine.getMaxBet()));
+                            break;
+                    }
+                }
+                else {
+                    engine.playComputerTurn();
                 }
             }
-            else {
-                engine.playComputerTurn();
-            }
+
+            displayHandStatus();
+
+            System.out.println("Press enter to proceed...");
+            HandMenu.readEnter();
+            engine.nextRound();
         }
 
         displayHandSummary();

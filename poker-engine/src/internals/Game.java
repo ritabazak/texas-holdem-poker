@@ -129,7 +129,13 @@ public abstract class Game {
     public boolean isBetActive() {
         return hand.isBetActive();
     }
+    public boolean isRoundInProgress() {
+        return hand.isRoundInProgress();
+    }
 
+    public void nextRound() {
+        hand.nextRound();
+    }
     public void playComputerTurn() {
         hand.playComputerTurn();
     }

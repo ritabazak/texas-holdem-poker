@@ -46,4 +46,9 @@ public class Menu {
 
         return sc.nextLine();
     }
+
+    static void readEnter() {
+        Scanner sc = new Scanner(System.in);
+        sc.nextLine();
+    }
 }

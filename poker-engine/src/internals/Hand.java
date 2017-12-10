@@ -50,6 +50,7 @@ public class Hand {
     private HandPhase phase = HandPhase.PRE_FLOP;
     private List<HandPlayer> winners = new LinkedList<>();
     private int remainder = 0;
+    private boolean roundInProgress = true;
 
     public Hand(List<GamePlayer> players, int dealer, int smallBlind, int bigBlind, int pot){
         communityCards = Arrays.asList(
@@ -80,7 +81,9 @@ public class Hand {
     private int getBigIndex() {
         return (dealer + 2) % players.size();
     }
-
+    private HandPlayer getCurrentPlayer() {
+        return players.get(turn);
+    }
     public List<Card> getCommunityCards() {
         return IntStream.range(0, communityCards.size())
                 .mapToObj(i ->
@@ -92,11 +95,6 @@ public class Hand {
                         )
                 ).collect(toList());
     }
-
-    public int getPot() {
-        return pot;
-    }
-
     public List<PlayerHandInfo> getHandStatus() {
         return IntStream.range(0, players.size())
                 .mapToObj(i ->
@@ -105,12 +103,11 @@ public class Hand {
                                 i == dealer,
                                 i == getSmallIndex(),
                                 i == getBigIndex(),
-                                i == turn,
+                                roundInProgress && i == turn,
                                 phase == HandPhase.FINISH || (players.get(i).getType() == Player.PlayerType.HUMAN && i == turn)
                         )
                 ).collect(toList());
     }
-
     public List<PlayerHandInfo> getWinners() {
         return IntStream.range(0, players.size())
                 .filter(i -> winners.contains(players.get(i)))
@@ -125,31 +122,15 @@ public class Hand {
                         )
                 ).collect(toList());
     }
-
+    public int getPot() {
+        return pot;
+    }
     public int getPotRemainder() {
         return remainder;
     }
-
-    public boolean handInProgress() {
-        return phase != HandPhase.FINISH;
-    }
-
-    private HandPlayer getCurrentPlayer() {
-        return players.get(turn);
-    }
-
-    public boolean isHumanTurn() {
-        return getCurrentPlayer().getType() == Player.PlayerType.HUMAN;
-    }
-
     public int getCurrentBet() {
         return players.stream().mapToInt(HandPlayer::getBet).max().orElse(0);
     }
-
-    public boolean isBetActive() {
-        return getCurrentBet() != 0;
-    }
-
     public int getMaxBet() {
         return Math.min(
                 players
@@ -162,6 +143,18 @@ public class Hand {
                         .mapToInt(HandPlayer::getBet)
                         .sum() + pot
         ) - getCurrentBet();
+    }
+    public boolean isHumanTurn() {
+        return getCurrentPlayer().getType() == Player.PlayerType.HUMAN;
+    }
+    public boolean isBetActive() {
+        return getCurrentBet() != 0;
+    }
+    public boolean handInProgress() {
+        return phase != HandPhase.FINISH;
+    }
+    public boolean isRoundInProgress() {
+        return roundInProgress;
     }
 
     public void playComputerTurn() {
@@ -197,18 +190,24 @@ public class Hand {
 
             cycleStart = turn;
 
-            if (players.stream().anyMatch(player -> !player.isFolded() && player.getChips() == 0)) {
-                phase = HandPhase.FINISH;
-            }
-            else {
-                phase = phase.next();
-            }
+            roundInProgress = false;
+        }
+    }
+
+    public void nextRound() {
+        if (players.stream().anyMatch(player -> !player.isFolded() && player.getChips() == 0)) {
+            phase = HandPhase.FINISH;
+        }
+        else {
+            phase = phase.next();
         }
 
         if (phase == HandPhase.FINISH) {
             finish();
         }
-
+        else {
+            roundInProgress = true;
+        }
     }
 
     public void fold() {
