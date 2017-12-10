@@ -148,8 +148,20 @@ public class ConsolePokerClient {
 
         System.out.println("");
 
-        concatBoxes(playerBoxes.get(3), playerBoxes.get(2))
-                .forEach(System.out::println);
+        if (playerBoxes.size() > 2) {
+            if (playerBoxes.size() == 3) {
+                playerBoxes.get(2)
+                        .forEach(line ->
+                                System.out.println(
+                                        String.format("%" + ((BOX_WIDTH + 4 + 9) / 2) + "s", "") + line
+                                )
+                        );
+            }
+            else {
+                concatBoxes(playerBoxes.get(3), playerBoxes.get(2))
+                        .forEach(System.out::println);
+            }
+        }
 
         System.out.println("");
     }

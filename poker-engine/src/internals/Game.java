@@ -93,7 +93,17 @@ public abstract class Game {
     }
 
     public int startHand() {
-        hand = new Hand(players, dealer, smallBlind, bigBlind, handIndex == 0 ? 0 : hand.getPotRemainder());
+        hand = new Hand(
+                players
+                        .stream()
+                        .filter(player -> player.getChips() > 0)
+                        .collect(toList()),
+                dealer,
+                smallBlind,
+                bigBlind,
+                handIndex == 0 ? 0 : hand.getPotRemainder()
+        );
+
         dealer = getSmallIndex();
         return ++handIndex;
     }
@@ -101,27 +111,21 @@ public abstract class Game {
     public List<Card> getCommunityCards() {
         return hand.getCommunityCards();
     }
-
     public int getPot() {
         return hand.getPot();
     }
-
     public boolean handInProgress(){
         return hand != null && hand.handInProgress();
     }
-
     public boolean isHumanTurn() {
         return hand.isHumanTurn();
     }
-
     public int getMaxBet() {
         return hand.getMaxBet();
     }
-
     public List<PlayerHandInfo> getWinners() {
         return hand.getWinners();
     }
-
     public boolean isBetActive() {
         return hand.isBetActive();
     }
@@ -129,7 +133,6 @@ public abstract class Game {
     public void playComputerTurn() {
         hand.playComputerTurn();
     }
-
     public void fold() {
         hand.fold();
     }

@@ -68,6 +68,7 @@ public class Hand {
         this.dealer = dealer;
 
         turn = getSmallIndex();
+
         placeBet(smallBlind);
         placeBet(bigBlind);
         cycleStart = turn;
@@ -217,6 +218,11 @@ public class Hand {
     }
 
     public void placeBet(int amount) {
+        if (getCurrentPlayer().getChips() < amount) {
+            fold();
+            return;
+        }
+
         getCurrentPlayer().placeBet(amount);
         cycleStart = turn;
         nextTurn();
