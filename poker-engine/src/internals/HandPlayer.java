@@ -13,7 +13,7 @@ public class HandPlayer extends Player {
     private String ranking = "";
 
     public HandPlayer(GamePlayer gamePlayer, Card firstCard, Card secondCard) {
-        super(gamePlayer.type, gamePlayer.chips);
+        super(gamePlayer);
 
         originalPlayer = gamePlayer;
 

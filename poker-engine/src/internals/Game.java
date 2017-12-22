@@ -14,22 +14,19 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toList;
 
 public abstract class Game {
+    GameConfig config;
     List<GamePlayer> players = new ArrayList<>();
     private int dealer;
     protected int handIndex = 0;
-    protected int handsCount;
-    private int buyIn;
     private Temporal startTime;
     private int smallBlind;
     private int bigBlind;
     private Hand hand;
 
     Game(GameConfig config) {
+        this.config = config;
         Random rand = new Random();
         dealer = rand.nextInt(config.getPlayerCount());
-
-        buyIn = config.getBuyIn();
-        handsCount = config.getHandsCount();
 
         smallBlind = config.getSmallBlind();
         bigBlind = config.getBigBlind();
@@ -52,16 +49,13 @@ public abstract class Game {
     protected int getBigIndex() {
         return (dealer + 2) % players.size();
     }
-    public int getHandsCount() {
-        return handsCount;
-    }
     public int getHandsPlayed() {
         return handIndex;
     }
     public int getMaxPot() {
         return players.stream()
                 .mapToInt(GamePlayer::getBuyIns)
-                .sum() * buyIn;
+                .sum() * config.getBuyIn();
     }
     public List<PlayerHandInfo> getHandStatus(){
         return hand.getHandStatus();
@@ -85,7 +79,7 @@ public abstract class Game {
     }
 
     public void addBuyIn(int playerIndex) {
-        players.get(playerIndex).addBuyIn(buyIn);
+        players.get(playerIndex).addBuyIn(config.getBuyIn());
     }
 
     void shufflePlayers(){
@@ -105,6 +99,19 @@ public abstract class Game {
         );
 
         dealer = getSmallIndex();
+
+        if (!config.isFixedBlinds() && (handIndex+1) % players.size() == 0) {
+            int maxBig = Math.min(
+                    config.getHandsCount() / config.getPlayerCount() * config.getBlindAddition(),
+                    config.getMaxTotalRounds() * config.getBlindAddition()
+            ) + config.getBigBlind();
+
+            if (bigBlind + config.getBlindAddition() <= maxBig) {
+                smallBlind += config.getBlindAddition();
+                bigBlind += config.getBlindAddition();
+            }
+        }
+
         return ++handIndex;
     }
 

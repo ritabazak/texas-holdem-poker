@@ -3,8 +3,11 @@ import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import exceptions.BadFileExtensionException;
+import exceptions.DuplicatePlayerIdException;
 import exceptions.InvalidBlindsException;
 import exceptions.InvalidHandsCountException;
 import immutables.PlayerGameInfo;
@@ -29,7 +32,7 @@ public class PokerEngine {
         return game.getGameStatus();
     }
     public int getHandsCount() {
-        return game.getHandsCount();
+        return gameConfig.getHandsCount();
     }
     public Duration getElapsedTime() {
         return game.getElapsedTime();
@@ -72,7 +75,12 @@ public class PokerEngine {
     }
 
     public void loadConfigFile(String xmlFilePath)
-            throws FileNotFoundException, BadFileExtensionException, InvalidHandsCountException, InvalidBlindsException {
+            throws FileNotFoundException,
+            BadFileExtensionException,
+            InvalidHandsCountException,
+            InvalidBlindsException,
+            DuplicatePlayerIdException {
+
         File f = new File(xmlFilePath);
 
         if (!Files.exists(f.toPath())) {
@@ -91,6 +99,16 @@ public class PokerEngine {
 
         if (temp.getSmallBlind() > temp.getBigBlind()) {
             throw new InvalidBlindsException();
+        }
+
+        Set<Integer> ids = gameConfig
+                .getConfigPlayers()
+                .stream()
+                .map(GameConfig.ConfigPlayer::getId)
+                .collect(Collectors.toSet());
+
+        if (ids.size() < gameConfig.getPlayerCount()) {
+            throw new DuplicatePlayerIdException();
         }
 
         gameConfig = temp;

@@ -1,23 +1,53 @@
 package internals;
 
+import sun.security.krb5.Config;
 import xml_game_config.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameConfig {
     public enum GameType {
         BASIC, MULTIPLAYER, DYNAMIC_MULTIPLAYER
     }
 
+    public class ConfigPlayer {
+        private final int id;
+        private final String name;
+        private final Player.PlayerType type;
+
+        ConfigPlayer(int id, String name, Player.PlayerType type) {
+            this.id = id;
+            this.name = name;
+            this.type = type;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Player.PlayerType getType() {
+            return type;
+        }
+    }
+
     private GameType gameType;
+    private boolean fixedBlinds;
     private int bigBlind;
     private int smallBlind;
+    private int blindAddition;
+    private int maxTotalRounds;
     private int buyIn;
     private int handsCount;
-    private int playerCount;
+    private List<ConfigPlayer> configPlayers;
 
     public GameConfig(File f) {
         try {
@@ -36,11 +66,20 @@ public class GameConfig {
     public GameType getGameType() {
         return gameType;
     }
+    public boolean isFixedBlinds() {
+        return fixedBlinds;
+    }
     public int getBigBlind() {
         return bigBlind;
     }
     public int getSmallBlind() {
         return smallBlind;
+    }
+    public int getBlindAddition() {
+        return blindAddition;
+    }
+    public int getMaxTotalRounds() {
+        return maxTotalRounds;
     }
     public int getBuyIn() {
         return buyIn;
@@ -49,7 +88,13 @@ public class GameConfig {
         return handsCount;
     }
     public int getPlayerCount() {
-        return playerCount;
+        if (gameType == GameType.BASIC) {
+            return 4;
+        }
+        return configPlayers.size();
+    }
+    public List<ConfigPlayer> getConfigPlayers() {
+        return configPlayers;
     }
 
     private void parseDescriptor(GameDescriptor descriptor) {
@@ -60,7 +105,15 @@ public class GameConfig {
     }
 
     private void parsePlayers(Players players) {
-        //TODO: Parse this
+        configPlayers = players
+                .getPlayer()
+                .stream()
+                .map(player -> new ConfigPlayer(
+                        player.getId(),
+                        player.getName(),
+                        Player.PlayerType.fromString(player.getType())
+                ))
+                .collect(Collectors.toList());
     }
 
     private void parseDynamicPlayers(DynamicPlayers dynPlayers) {
@@ -76,8 +129,12 @@ public class GameConfig {
     private void parseBlinds(Blindes blinds) {
         smallBlind = blinds.getSmall();
         bigBlind = blinds.getBig();
-        //TODO: Parse blinds.getAdditions()
-        //TODO: Parse blinds.getMaxTotalRounds()
+        fixedBlinds = blinds.isFixed();
+
+        if (!fixedBlinds) {
+            blindAddition = blinds.getAdditions();
+            maxTotalRounds = blinds.getMaxTotalRounds();
+        }
     }
 
     private void parseGameType(String gameTypeStr) {
@@ -91,7 +148,6 @@ public class GameConfig {
             default:
             case "Basic":
                 gameType = GameType.BASIC;
-                playerCount = 4;
         }
     }
 }

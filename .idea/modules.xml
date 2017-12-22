@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/console-client/console-client.iml" filepath="$PROJECT_DIR$/console-client/console-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/javafx-client/javafx-client.iml" filepath="$PROJECT_DIR$/javafx-client/javafx-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/poker-engine/poker-engine.iml" filepath="$PROJECT_DIR$/poker-engine/poker-engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/texas-holdem-poker.iml" filepath="$PROJECT_DIR$/texas-holdem-poker.iml" />
     </modules>

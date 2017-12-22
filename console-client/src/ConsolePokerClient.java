@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import exceptions.BadFileExtensionException;
+import exceptions.DuplicatePlayerIdException;
 import exceptions.InvalidBlindsException;
 import exceptions.InvalidHandsCountException;
 import immutables.PlayerHandInfo;
@@ -76,6 +77,9 @@ public class ConsolePokerClient {
             }
             catch (InvalidHandsCountException e) {
                 System.out.println("There must be enough hands for all players to play an equal amount of hands!\nPlease enter a valid XML file!");
+            }
+            catch (DuplicatePlayerIdException e) {
+                // Does not happen in BasicGame (console)
             }
         }
 
