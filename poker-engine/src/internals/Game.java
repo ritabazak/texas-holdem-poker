@@ -139,6 +139,12 @@ public abstract class Game {
     public boolean isRoundInProgress() {
         return hand.isRoundInProgress();
     }
+    public int getSmallBlind() {
+        return smallBlind;
+    }
+    public int getBigBlind() {
+        return bigBlind;
+    }
 
     public void nextRound() {
         hand.nextRound();

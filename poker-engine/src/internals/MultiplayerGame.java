@@ -19,7 +19,6 @@ public class MultiplayerGame extends Game {
                         .collect(Collectors.toList())
         );
 
-        // Ask if players need to be shuffled
         shufflePlayers();
     }
 }

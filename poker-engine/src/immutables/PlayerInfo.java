@@ -31,6 +31,8 @@ public class PlayerInfo {
     private final PlayerType type;
     private final PlayerState state;
     private final int chips;
+    private final String name;
+    private final int id;
 
     public PlayerInfo(Player player,
                       boolean isDealer,
@@ -38,6 +40,8 @@ public class PlayerInfo {
                       boolean isBig) {
         this.type = player.getType().toPlayerInfo();
         this.chips = player.getChips();
+        this.name = player.getName();
+        this.id = player.getId();
 
         if (isDealer) {
             this.state = PlayerState.DEALER;
@@ -61,5 +65,11 @@ public class PlayerInfo {
     }
     public int getChips() {
         return chips;
+    }
+    public int getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
     }
 }

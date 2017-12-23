@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<GridPane style="-fx-background-color: #027511;" stylesheets="@css/gameBoard.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GameBoardController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" vgrow="NEVER" />
+    </rowConstraints>
+    <children>
+        <GridPane fx:id="playerTopLeft" alignment="CENTER" hgap="5.0" vgap="5.0" GridPane.columnIndex="1">
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            </rowConstraints>
+            <children>
+                <Label fx:id="playerTopLeftNameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Haim" />
+                <Label fx:id="playerTopLeftTypeLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="playerTypeLabel" text="S" GridPane.columnIndex="1">
+                    <font>
+                        <Font size="18.0" />
+                    </font></Label>
+                <ImageView fx:id="playerTopLeftCardOneImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                    </GridPane.margin>
+                </ImageView>
+                <ImageView fx:id="playerTopLeftCardTwoImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="playerTopLeftBetLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Bet: 0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </GridPane>
+        <GridPane fx:id="playerTopRight" alignment="CENTER" hgap="5.0" vgap="5.0" GridPane.columnIndex="2">
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            </rowConstraints>
+            <children>
+                <Label fx:id="playerTopRightNameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Haim" />
+                <Label fx:id="playerTopRightTypeLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="playerTypeLabel" text="B" GridPane.columnIndex="1">
+                    <font>
+                        <Font size="18.0" />
+                    </font></Label>
+                <ImageView fx:id="playerTopRightCardOneImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                    </GridPane.margin>
+                </ImageView>
+                <ImageView fx:id="playerTopRightCardTwoImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="playerTopRightBetLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Bet: 0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </GridPane>
+        <GridPane fx:id="playerLeft" alignment="CENTER" hgap="5.0" vgap="5.0" GridPane.rowSpan="3">
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            </rowConstraints>
+            <children>
+                <Label fx:id="playerLeftNameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Haim" />
+                <Label fx:id="playerLeftTypeLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="playerTypeLabel" text="D" GridPane.columnIndex="1">
+                    <font>
+                        <Font size="18.0" />
+                    </font></Label>
+                <ImageView fx:id="playerLeftCardOneImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                    </GridPane.margin>
+                </ImageView>
+                <ImageView fx:id="playerLeftCardTwoImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="playerLeftBetLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Bet: 0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </GridPane>
+        <GridPane fx:id="playerRight" alignment="CENTER" hgap="5.0" vgap="5.0" GridPane.columnIndex="3" GridPane.rowSpan="3">
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            </rowConstraints>
+            <children>
+                <Label fx:id="playerRightNameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Haim" />
+                <Label fx:id="playerRightTypeLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="playerTypeLabel" text="D" GridPane.columnIndex="1">
+                    <font>
+                        <Font size="18.0" />
+                    </font></Label>
+                <ImageView fx:id="playerRightCardOneImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                    </GridPane.margin>
+                </ImageView>
+                <ImageView fx:id="playerRightCardTwoImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="playerRightBetLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Bet: 0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </GridPane>
+        <GridPane fx:id="playerBottomLeft" alignment="CENTER" hgap="5.0" vgap="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            </rowConstraints>
+            <children>
+                <Label fx:id="playerBottomLeftNameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Haim" />
+                <Label fx:id="playerBottomLeftTypeLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="playerTypeLabel" text="D" GridPane.columnIndex="1">
+                    <font>
+                        <Font size="18.0" />
+                    </font></Label>
+                <ImageView fx:id="playerBottomLeftCardOneImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                    </GridPane.margin>
+                </ImageView>
+                <ImageView fx:id="playerBottomLeftCardTwoImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="playerBottomLeftBetLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Bet: 0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </GridPane>
+        <GridPane fx:id="playerBottomRight" alignment="CENTER" hgap="5.0" vgap="5.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                <RowConstraints maxHeight="1.7976931348623157E308" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+            </rowConstraints>
+            <children>
+                <Label fx:id="playerBottomRightNameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Haim" />
+                <Label fx:id="playerBottomRightTypeLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="playerTypeLabel" text="D" GridPane.columnIndex="1">
+                    <font>
+                        <Font size="18.0" />
+                    </font></Label>
+                <ImageView fx:id="playerBottomRightCardOneImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                    </GridPane.margin>
+                </ImageView>
+                <ImageView fx:id="playerBottomRightCardTwoImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <image>
+                        <Image url="@images/cards/blank_card.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="playerBottomRightBetLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Bet: 0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </GridPane>
+      <GridPane fx:id="tableCenter" alignment="CENTER" hgap="5.0" vgap="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+        <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" />
+            <ColumnConstraints hgrow="NEVER" />
+            <ColumnConstraints hgrow="NEVER" />
+            <ColumnConstraints hgrow="NEVER" />
+          <ColumnConstraints hgrow="NEVER" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" />
+          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <ImageView fx:id="tableCenterCardOneImage" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.halignment="CENTER">
+               <image>
+                  <Image url="@images/cards/blank_card.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="tableCenterCardTwoImage" fitHeight="60.0" fitWidth="80.0" layoutX="10.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+               <image>
+                  <Image url="@images/cards/blank_card.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="tableCenterCardThreeImage" fitHeight="60.0" fitWidth="80.0" layoutX="90.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+               <image>
+                  <Image url="@images/cards/blank_card.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="tableCenterCardFourImage" fitHeight="60.0" fitWidth="80.0" layoutX="10.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.columnIndex="3" GridPane.halignment="CENTER">
+               <image>
+                  <Image url="@images/cards/blank_card.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="tableCenterCardFiveImage" fitHeight="60.0" fitWidth="80.0" layoutX="10.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" styleClass="cardImage" GridPane.columnIndex="4" GridPane.halignment="CENTER">
+               <image>
+                  <Image url="@images/cards/blank_card.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="tableCenterPotLabel" alignment="CENTER" contentDisplay="CENTER" text="Pot: 1234" GridPane.columnSpan="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+               <font>
+                  <Font size="20.0" />
+               </font></Label>
+         </children>
+         <GridPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </GridPane.margin>
+      </GridPane>
+    </children>
+</GridPane>

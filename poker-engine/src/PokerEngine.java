@@ -16,6 +16,7 @@ import internals.BasicGame;
 import immutables.Card;
 import internals.Game;
 import internals.GameConfig;
+import internals.MultiplayerGame;
 
 public class PokerEngine {
     private boolean gameOn = false;
@@ -73,6 +74,21 @@ public class PokerEngine {
     public boolean isRoundInProgress() {
         return game.isRoundInProgress();
     }
+    public int getSmallBlind() {
+        return game.getSmallBlind();
+    }
+    public int getBigBlind() {
+        return game.getBigBlind();
+    }
+    public int getBuyIn() {
+        return gameConfig.getBuyIn();
+    }
+    public int getInitialSmallBlind() {
+        return gameConfig.getSmallBlind();
+    }
+    public int getInitialBigBlind() {
+        return gameConfig.getBigBlind();
+    }
 
     public void loadConfigFile(String xmlFilePath)
             throws FileNotFoundException,
@@ -101,14 +117,16 @@ public class PokerEngine {
             throw new InvalidBlindsException();
         }
 
-        Set<Integer> ids = gameConfig
-                .getConfigPlayers()
-                .stream()
-                .map(GameConfig.ConfigPlayer::getId)
-                .collect(Collectors.toSet());
+        if (temp.getConfigPlayers() != null) {
+            Set<Integer> ids = temp
+                    .getConfigPlayers()
+                    .stream()
+                    .map(GameConfig.ConfigPlayer::getId)
+                    .collect(Collectors.toSet());
 
-        if (ids.size() < gameConfig.getPlayerCount()) {
-            throw new DuplicatePlayerIdException();
+            if (ids.size() < temp.getPlayerCount()) {
+                throw new DuplicatePlayerIdException();
+            }
         }
 
         gameConfig = temp;
@@ -116,6 +134,13 @@ public class PokerEngine {
         switch (gameConfig.getGameType()) {
             case BASIC:
                 game = new BasicGame(gameConfig);
+                break;
+            case MULTIPLAYER:
+                game = new MultiplayerGame(gameConfig);
+                break;
+            case DYNAMIC_MULTIPLAYER:
+                //TODO: Implement this
+                break;
         }
     }
     public void startGame() {

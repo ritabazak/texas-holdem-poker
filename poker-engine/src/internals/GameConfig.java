@@ -105,15 +105,17 @@ public class GameConfig {
     }
 
     private void parsePlayers(Players players) {
-        configPlayers = players
-                .getPlayer()
-                .stream()
-                .map(player -> new ConfigPlayer(
-                        player.getId(),
-                        player.getName(),
-                        Player.PlayerType.fromString(player.getType())
-                ))
-                .collect(Collectors.toList());
+        if (players != null) {
+            configPlayers = players
+                    .getPlayer()
+                    .stream()
+                    .map(player -> new ConfigPlayer(
+                            player.getId(),
+                            player.getName(),
+                            Player.PlayerType.fromString(player.getType())
+                    ))
+                    .collect(Collectors.toList());
+        }
     }
 
     private void parseDynamicPlayers(DynamicPlayers dynPlayers) {
@@ -139,10 +141,10 @@ public class GameConfig {
 
     private void parseGameType(String gameTypeStr) {
         switch (gameTypeStr) {
-            case "Multiplayer":
+            case "MultiPlayer":
                 gameType = GameType.MULTIPLAYER;
                 break;
-            case "DynamicMultiplayer":
+            case "DynamicMultiPlayer":
                 gameType = GameType.DYNAMIC_MULTIPLAYER;
                 break;
             default:
