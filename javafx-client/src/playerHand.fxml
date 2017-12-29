@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<GridPane alignment="CENTER" hgap="5.0" vgap="5.0"
+          xmlns="http://javafx.com/javafx/8.0.121"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="PlayerHandController" fx:id="grid"
+          styleClass="playerHand" stylesheets="@css/playerHand.css">
+    <columnConstraints>
+        <ColumnConstraints />
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints maxHeight="1.7976931348623157E308" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+    </rowConstraints>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+    </padding>
+    <Label fx:id="nameLabel" styleClass="nameLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" />
+    <Label fx:id="typeLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="playerTypeLabel" GridPane.columnIndex="1">
+        <font>
+            <Font size="18.0" />
+        </font>
+    </Label>
+    <fx:include source="card.fxml" fx:id="cardOneImage" GridPane.rowIndex="1" />
+    <fx:include source="card.fxml" fx:id="cardTwoImage" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <Label alignment="CENTER_RIGHT" text="Bet:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+    <Label fx:id="betLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+</GridPane>

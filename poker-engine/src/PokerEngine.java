@@ -56,7 +56,7 @@ public class PokerEngine {
     public int getPot() {
         return game.getPot();
     }
-    public boolean handInProgress() {
+    public boolean isHandInProgress() {
         return game.handInProgress();
     }
     public boolean isHumanTurn() {

@@ -11,7 +11,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class Hand {
-    public enum HandPhase{
+    public enum HandPhase {
         PRE_FLOP(0), FLOP(1), TURN(2), RIVER(3), FINISH(4);
 
         private int phase;

@@ -18,11 +18,11 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Fold" />
-      <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Check" GridPane.columnIndex="1" />
-      <Button layoutX="120.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Call" GridPane.columnIndex="2" />
-      <Button layoutX="225.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Bet" GridPane.columnIndex="3" />
-      <Button layoutX="330.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Raise" GridPane.columnIndex="4" />
+      <Button fx:id="foldButton" onAction="#foldButtonAction" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Fold" />
+      <Button fx:id="checkButton" onAction="#checkButtonAction" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Check" GridPane.columnIndex="1" />
+      <Button fx:id="callButton" onAction="#callButtonAction" layoutX="120.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Call" GridPane.columnIndex="2" />
+      <Button fx:id="betButton" onAction="#betButtonAction" layoutX="225.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Bet" GridPane.columnIndex="3" />
+      <Button fx:id="raiseButton" onAction="#raiseButtonAction" layoutX="330.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Raise" GridPane.columnIndex="4" />
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

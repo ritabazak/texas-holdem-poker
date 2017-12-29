@@ -1,0 +1,10 @@
+.playerHand {
+
+}
+
+.playerHand.currentPlayer .nameLabel {
+    -fx-border-color: gold;
+    -fx-border-style: dotted;
+    -fx-border-width: 3px;
+    -fx-border-radius: 4px;
+}

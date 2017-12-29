@@ -54,6 +54,11 @@ public class GameMenuController {
         parent.updateGameOn();
         parent.updateGameStatus();
         engine.startHand();
+
+        if (!engine.isHumanTurn()) {
+            parent.nextTurn();
+        }
+
         parent.updateHandStatus();
     }
 
@@ -78,6 +83,4 @@ public class GameMenuController {
     public void bindXmlLoaded(BooleanProperty xmlLoaded) {
         startGameButton.disableProperty().bind(xmlLoaded.not());
     }
-
-
 }

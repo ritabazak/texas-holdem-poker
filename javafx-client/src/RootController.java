@@ -1,16 +1,16 @@
 import immutables.Card;
 import immutables.PlayerGameInfo;
 import immutables.PlayerHandInfo;
-import javafx.beans.Observable;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RootController {
     @FXML private GameBoardController gameBoardController;
@@ -39,6 +39,7 @@ public class RootController {
     private ObservableList<Card> communityCards = FXCollections.observableList(new ArrayList<>());
     private ObservableList<PlayerHandInfo> playerHandInfo = FXCollections.observableList(new ArrayList<>());
     private IntegerProperty pot = new SimpleIntegerProperty(0);
+    private BooleanProperty betActive = new SimpleBooleanProperty(false);
     private IntegerProperty maxBet = new SimpleIntegerProperty(0);
 
     @FXML private void initialize() {
@@ -49,9 +50,8 @@ public class RootController {
         gameInfoPane.managedProperty().bind(xmlLoaded);
 
         gameMenuController.setParentController(this);
+        handMenuController.setParentController(this);
         gameMenuController.bindXmlLoaded(xmlLoaded);
-
-        gameBoardController.bindXmlLoaded(xmlLoaded);
 
         gameInfoPaneController.bindGameStatusProperties(
                 playerGameInfo,
@@ -68,6 +68,11 @@ public class RootController {
                 communityCards,
                 playerHandInfo,
                 pot
+        );
+
+        handMenuController.bindHandStatusProperties(
+                maxBet,
+                betActive
         );
     }
 
@@ -91,6 +96,54 @@ public class RootController {
         buyIn.setValue(engine.getBuyIn());
     }
 
+    public void nextTurn() {
+        if (!engine.isHandInProgress()) {
+            finishHand();
+        }
+
+        if (!engine.isRoundInProgress()) {
+            engine.nextRound();
+        }
+
+        updateHandStatus();
+
+        Thread th = new Thread(() -> {
+            try {
+                while (!engine.isHumanTurn()) {
+                    Thread.sleep(1000);
+
+                    engine.playComputerTurn();
+
+                    if (!engine.isHandInProgress()) {
+                        finishHand();
+                    }
+
+                    if (!engine.isRoundInProgress()) {
+                        engine.nextRound();
+                    }
+                    Platform.runLater(this::updateHandStatus);
+                }
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        th.start();
+    }
+
+    private void finishHand() {
+        Alert a = new Alert(Alert.AlertType.INFORMATION, "Egg");
+        a.showAndWait();
+
+        updateGameStatus();
+        communityCards.clear();
+        playerHandInfo.clear();
+        pot.setValue(0);
+        maxBet.setValue(0);
+        betActive.setValue(false);
+    }
+
     public void updateHandStatus() {
         communityCards.clear();
         communityCards.addAll(engine.getCommunityCards());
@@ -98,11 +151,13 @@ public class RootController {
         playerHandInfo.addAll(engine.getHandStatus());
         pot.setValue(engine.getPot());
         maxBet.setValue(engine.getMaxBet());
+        betActive.setValue(engine.isBetActive());
     }
 
     public void setStage(Stage stage) {
         this.stage = stage;
         gameMenuController.setStage(this.stage);
+        handMenuController.setStage(this.stage);
     }
 
     public void updateGameOn() {

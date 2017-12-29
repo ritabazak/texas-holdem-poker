@@ -1,8 +1,8 @@
 .playerTypeLabel {
-    -fx-border-color: red;
+    /*-fx-border-color: red;
     -fx-border-radius: 100%;
     -fx-border-style: solid;
-    -fx-border-width: 3px;
+    -fx-border-width: 3px;*/
 }
 
 .label {

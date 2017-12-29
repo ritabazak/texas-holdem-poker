@@ -1,134 +1,110 @@
 import immutables.Card;
-import immutables.PlayerGameInfo;
 import immutables.PlayerHandInfo;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
 import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import xml_game_config.Player;
+import javafx.scene.layout.Pane;
 
 public class GameBoardController {
+    @FXML private PlayerHandController playerTopLeftController;
+    @FXML private PlayerHandController playerTopRightController;
+    @FXML private PlayerHandController playerLeftController;
+    @FXML private PlayerHandController playerRightController;
+    @FXML private PlayerHandController playerBottomLeftController;
+    @FXML private PlayerHandController playerBottomRightController;
+    
+    @FXML private CardController tableCenterCard1Controller;
+    @FXML private CardController tableCenterCard2Controller;
+    @FXML private CardController tableCenterCard3Controller;
+    @FXML private CardController tableCenterCard4Controller;
+    @FXML private CardController tableCenterCard5Controller;
 
-    @FXML private GridPane playerTopLeft;
-    @FXML private GridPane playerTopRight;
-    @FXML private GridPane playerLeft;
-    @FXML private GridPane playerRight;
-    @FXML private GridPane playerBottomLeft;
-    @FXML private GridPane playerBottomRight;
+    @FXML private Pane playerTopLeft;
+    @FXML private Pane playerTopRight;
+    @FXML private Pane playerLeft;
+    @FXML private Pane playerRight;
+    @FXML private Pane playerBottomLeft;
+    @FXML private Pane playerBottomRight;
+
     @FXML private GridPane tableCenter;
-
-    @FXML private Label playerTopLeftNameLabel;
-    @FXML private Label playerTopLeftTypeLabel;
-    @FXML private ImageView playerTopLeftCardOneImage;
-    @FXML private ImageView playerTopLeftCardTwoImage;
-    @FXML private Label playerTopLeftBetLabel;
-
-    @FXML private Label playerTopRightNameLabel;
-    @FXML private Label playerTopRightTypeLabel;
-    @FXML private ImageView playerTopRightCardOneImage;
-    @FXML private ImageView playerTopRightCardTwoImage;
-    @FXML private Label playerTopRightBetLabel;
-
-    @FXML private Label playerLeftNameLabel;
-    @FXML private Label playerLeftTypeLabel;
-    @FXML private ImageView playerLeftCardOneImage;
-    @FXML private ImageView playerLeftCardTwoImage;
-    @FXML private Label playerLeftBetLabel;
-
-    @FXML private Label playerRightNameLabel;
-    @FXML private Label playerRightTypeLabel;
-    @FXML private ImageView playerRightCardOneImage;
-    @FXML private ImageView playerRightCardTwoImage;
-    @FXML private Label playerRightBetLabel;
-
-    @FXML private Label playerBottomLeftNameLabel;
-    @FXML private Label playerBottomLeftTypeLabel;
-    @FXML private ImageView playerBottomLeftCardOneImage;
-    @FXML private ImageView playerBottomLeftCardTwoImage;
-    @FXML private Label playerBottomLeftBetLabel;
-
-    @FXML private Label playerBottomRightNameLabel;
-    @FXML private Label playerBottomRightTypeLabel;
-    @FXML private ImageView playerBottomRightCardOneImage;
-    @FXML private ImageView playerBottomRightCardTwoImage;
-    @FXML private Label playerBottomRightBetLabel;
-
-    @FXML private ImageView tableCenterCardOneImage;
-    @FXML private ImageView tableCenterCardTwoImage;
-    @FXML private ImageView tableCenterCardThreeImage;
-    @FXML private ImageView tableCenterCardFourImage;
-    @FXML private ImageView tableCenterCardFiveImage;
     @FXML private Label tableCenterPotLabel;
 
+    private IntegerBinding playerCount;
 
     private PokerEngine engine;
-
 
     public void setEngine(PokerEngine engine) {
         this.engine = engine;
     }
 
-    public void bindXmlLoaded(BooleanProperty xmlLoaded) {
-        playerTopLeft.visibleProperty().bind(xmlLoaded);
-        playerTopRight.visibleProperty().bind(xmlLoaded);
-        playerLeft.visibleProperty().bind(xmlLoaded);
-        playerRight.visibleProperty().bind(xmlLoaded);
-        playerBottomLeft.visibleProperty().bind(xmlLoaded);
-        playerBottomRight.visibleProperty().bind(xmlLoaded);
-        tableCenter.visibleProperty().bind(xmlLoaded);
+    public void bindHandStatusProperties(ObservableList<Card> communityCards, ObservableList<PlayerHandInfo> playerHandInfo, IntegerProperty pot) {
+        tableCenterCard1Controller.bindCard(Bindings.valueAt(communityCards, 0));
+        tableCenterCard2Controller.bindCard(Bindings.valueAt(communityCards, 1));
+        tableCenterCard3Controller.bindCard(Bindings.valueAt(communityCards, 2));
+        tableCenterCard4Controller.bindCard(Bindings.valueAt(communityCards, 3));
+        tableCenterCard5Controller.bindCard(Bindings.valueAt(communityCards, 4));
+        tableCenterPotLabel.textProperty().bind(pot.asString());
 
+        playerCount = Bindings.size(playerHandInfo);
+
+        playerLeft.visibleProperty().bind(playerCount.greaterThanOrEqualTo(3));
+        playerRight.visibleProperty().bind(playerCount.greaterThanOrEqualTo(3));
+        playerTopLeft.visibleProperty().bind(playerCount.greaterThanOrEqualTo(3));
+        tableCenter.visibleProperty().bind(playerCount.greaterThanOrEqualTo(3));
+
+        playerTopRight.visibleProperty().bind(playerCount.greaterThanOrEqualTo(5));
+        playerTopRight.managedProperty().bind(playerTopRight.visibleProperty());
+
+        playerBottomLeft.visibleProperty().bind(playerCount.greaterThanOrEqualTo(4));
+        playerBottomLeft.managedProperty().bind(playerBottomLeft.visibleProperty());
+
+        playerBottomRight.visibleProperty().bind(playerCount.isEqualTo(6));
+        playerBottomRight.managedProperty().bind(playerBottomRight.visibleProperty());
+
+        handlePlayerCountChange(playerCount.get(), playerHandInfo);
+        playerCount.addListener((sizeBinding, oldSize, newSize) -> handlePlayerCountChange(newSize.intValue(), playerHandInfo));
     }
 
-    public void bindHandStatusProperties(ObservableList<Card> communityCards, ObservableList<PlayerHandInfo> playerHandInfo, IntegerProperty pot) {
-        playerTopRight.visibleProperty().bind(Bindings.size(playerHandInfo).greaterThanOrEqualTo(5));
-        playerBottomLeft.visibleProperty().bind(Bindings.size(playerHandInfo).greaterThanOrEqualTo(4));
-        playerBottomRight.visibleProperty().bind(Bindings.size(playerHandInfo).isEqualTo(6));
+    private void handlePlayerCountChange(int count, ObservableList<PlayerHandInfo> playerHandInfo) {
+        ObjectBinding<PlayerHandInfo> player1 = Bindings.valueAt(playerHandInfo, 0);
+        ObjectBinding<PlayerHandInfo> player2 = Bindings.valueAt(playerHandInfo, 1);
+        ObjectBinding<PlayerHandInfo> player3 = Bindings.valueAt(playerHandInfo, 2);
+        ObjectBinding<PlayerHandInfo> player4 = Bindings.valueAt(playerHandInfo, 3);
+        ObjectBinding<PlayerHandInfo> player5 = Bindings.valueAt(playerHandInfo, 4);
+        ObjectBinding<PlayerHandInfo> player6 = Bindings.valueAt(playerHandInfo, 5);
 
-        playerLeftNameLabel.setText(playerHandInfo.get(0).getName());
-        ObjectBinding<PlayerHandInfo> info0 = Bindings.valueAt(playerHandInfo, 0);
-        Bindings.
+        playerLeftController.bindPlayerProperties(player1);
+        playerTopLeftController.bindPlayerProperties(player2);
 
-        playerLeftTypeLabel;
-        playerLeftCardOneImage;
-        playerLeftCardTwoImage;
-        playerLeftBetLabel;
-
-        playerTopLeftNameLabel;
-        playerTopLeftTypeLabel;
-        playerTopLeftCardOneImage;
-        playerTopLeftCardTwoImage;
-        playerTopLeftBetLabel;
-        playerTopRightNameLabel;
-        playerTopRightTypeLabel;
-        playerTopRightCardOneImage;
-        playerTopRightCardTwoImage;
-        playerTopRightBetLabel;
-        playerRightNameLabel;
-        playerRightTypeLabel;
-        playerRightCardOneImage;
-        playerRightCardTwoImage;
-        playerRightBetLabel;
-        playerBottomLeftNameLabel;
-        playerBottomLeftTypeLabel;
-        playerBottomLeftCardOneImage;
-        playerBottomLeftCardTwoImage;
-        playerBottomLeftBetLabel;
-        playerBottomRightNameLabel;
-        playerBottomRightTypeLabel;
-        playerBottomRightCardOneImage;
-        playerBottomRightCardTwoImage;
-        playerBottomRightBetLabel;
-        tableCenterCardOneImage;
-        tableCenterCardTwoImage;
-        tableCenterCardThreeImage;
-        tableCenterCardFourImage;
-        tableCenterCardFiveImage;
-        tableCenterPotLabel;
-
+        if (count == 3) {
+            playerRightController.bindPlayerProperties(player3);
+            GridPane.setColumnSpan(playerTopLeft, 2);
+        }
+        else if (count == 4) {
+            playerRightController.bindPlayerProperties(player3);
+            playerBottomLeftController.bindPlayerProperties(player4);
+            GridPane.setColumnSpan(playerTopLeft, 2);
+            GridPane.setColumnSpan(playerBottomLeft, 2);
+        }
+        else if (count == 5) {
+            playerTopRightController.bindPlayerProperties(player3);
+            playerRightController.bindPlayerProperties(player4);
+            playerBottomLeftController.bindPlayerProperties(player5);
+            GridPane.setColumnSpan(playerTopLeft, 1);
+            GridPane.setColumnSpan(playerBottomLeft, 2);
+        }
+        else if (count == 6) {
+            playerTopRightController.bindPlayerProperties(player3);
+            playerRightController.bindPlayerProperties(player4);
+            playerBottomRightController.bindPlayerProperties(player5);
+            playerBottomLeftController.bindPlayerProperties(player6);
+            GridPane.setColumnSpan(playerTopLeft, 1);
+            GridPane.setColumnSpan(playerBottomLeft, 1);
+        }
     }
 }

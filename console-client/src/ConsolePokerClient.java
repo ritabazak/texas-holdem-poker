@@ -200,7 +200,7 @@ public class ConsolePokerClient {
     private void playHand() {
         engine.startHand();
 
-        while (engine.handInProgress()) {
+        while (engine.isHandInProgress()) {
             while (engine.isRoundInProgress()) {
                 if (engine.isHumanTurn()) {
                     displayHandStatus();
