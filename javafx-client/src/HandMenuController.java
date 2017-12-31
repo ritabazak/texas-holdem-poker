@@ -30,12 +30,13 @@ public class HandMenuController {
         parent = rootController;
     }
 
-    public void bindHandStatusProperties(IntegerProperty maxBet, BooleanProperty betActive) {
+    public void bindHandStatusProperties(IntegerProperty maxBet, BooleanProperty betActive, BooleanProperty disableMenu) {
         this.maxBet = maxBet;
-        checkButton.disableProperty().bind(betActive);
-        callButton.disableProperty().bind(betActive.not());
-        betButton.disableProperty().bind(betActive);
-        raiseButton.disableProperty().bind(betActive.not().and(maxBet.lessThanOrEqualTo(0)));
+        foldButton.disableProperty().bind(disableMenu);
+        checkButton.disableProperty().bind(disableMenu.or(betActive));
+        callButton.disableProperty().bind(disableMenu.or(betActive.not()));
+        betButton.disableProperty().bind(disableMenu.or(betActive));
+        raiseButton.disableProperty().bind(disableMenu.or(betActive.not().and(maxBet.lessThanOrEqualTo(0))));
     }
 
     @FXML private void foldButtonAction(ActionEvent action){

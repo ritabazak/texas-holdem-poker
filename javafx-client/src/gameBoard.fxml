@@ -27,7 +27,7 @@
         <fx:include source="playerHand.fxml" fx:id="playerBottomLeft" GridPane.columnIndex="1" GridPane.rowIndex="2" />
         <fx:include source="playerHand.fxml" fx:id="playerBottomRight" GridPane.columnIndex="2" GridPane.rowIndex="2" />
 
-        <GridPane fx:id="tableCenter" alignment="CENTER" hgap="5.0" vgap="5.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+        <GridPane fx:id="tableCenter" alignment="CENTER" hgap="5.0" vgap="10.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
             <columnConstraints>
                 <ColumnConstraints hgrow="NEVER" />
                 <ColumnConstraints hgrow="NEVER" />
@@ -36,8 +36,8 @@
                 <ColumnConstraints hgrow="NEVER" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="10.0" />
-                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints />
+                <RowConstraints vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
                 <fx:include source="card.fxml" fx:id="tableCenterCard1" GridPane.halignment="CENTER" />
@@ -45,11 +45,12 @@
                 <fx:include source="card.fxml" fx:id="tableCenterCard3" GridPane.halignment="CENTER" GridPane.columnIndex="2" />
                 <fx:include source="card.fxml" fx:id="tableCenterCard4" GridPane.halignment="CENTER" GridPane.columnIndex="3" />
                 <fx:include source="card.fxml" fx:id="tableCenterCard5" GridPane.halignment="CENTER" GridPane.columnIndex="4" />
-                <Label fx:id="tableCenterPotLabel" alignment="CENTER" contentDisplay="CENTER" GridPane.columnSpan="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Label>
+
+                <GridPane GridPane.halignment="CENTER" styleClass="potLabelGrid" alignment="TOP_CENTER" hgap="5" GridPane.rowIndex="1" GridPane.columnSpan="5">
+                    <Label text="Pot:" />
+                    <Label fx:id="tableCenterPotLabel" alignment="CENTER" contentDisplay="CENTER"
+                           GridPane.halignment="CENTER" GridPane.columnIndex="1" />
+                </GridPane>
             </children>
             <GridPane.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

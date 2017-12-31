@@ -18,23 +18,26 @@ public class PlayerHandController {
     public void bindPlayerProperties(ObjectBinding<PlayerHandInfo> playerInfo) {
         StringBinding safeName = Bindings.createStringBinding(() ->
                 playerInfo.get() == null? "": playerInfo.get().getName(), playerInfo);
-        nameLabel.textProperty().bind(safeName);
 
         StringBinding safeType = Bindings.createStringBinding(() ->
                 playerInfo.get() == null? "": playerInfo.get().getState().toShortString(), playerInfo);
-        typeLabel.textProperty().bind(safeType);
 
         NumberBinding safeBet = Bindings.createIntegerBinding(() ->
                 playerInfo.get() == null? 0: playerInfo.get().getBet(), playerInfo);
-        betLabel.textProperty().bind(safeBet.asString());
 
         ObjectBinding<Card> safeCardOne = Bindings.createObjectBinding(() ->
                 playerInfo.get() == null? null: playerInfo.get().getFirstCard(), playerInfo);
-        cardOneImageController.bindCard(safeCardOne);
 
         ObjectBinding<Card> safeCardTwo = Bindings.createObjectBinding(() ->
                 playerInfo.get() == null? null: playerInfo.get().getSecondCard(), playerInfo);
+
+        nameLabel.textProperty().bind(safeName);
+        typeLabel.textProperty().bind(safeType);
+        betLabel.textProperty().bind(safeBet.asString());
+        cardOneImageController.bindCard(safeCardOne);
         cardTwoImageController.bindCard(safeCardTwo);
+        typeLabel.visibleProperty().bind(safeType.isNotEmpty());
+        typeLabel.managedProperty().bind(typeLabel.visibleProperty());
 
         currentPlayer = Bindings.createBooleanBinding(() ->
                 playerInfo.get() != null && playerInfo.get().isCurrent(), playerInfo);

@@ -121,7 +121,7 @@ public abstract class Game {
     public int getPot() {
         return hand.getPot();
     }
-    public boolean handInProgress(){
+    public boolean isHandInProgress() {
         return hand != null && hand.handInProgress();
     }
     public boolean isHumanTurn() {
@@ -140,10 +140,19 @@ public abstract class Game {
         return hand.isRoundInProgress();
     }
     public int getSmallBlind() {
-        return smallBlind;
+        return hand != null? hand.getSmallBlind(): smallBlind;
     }
     public int getBigBlind() {
-        return bigBlind;
+        return hand != null? hand.getBigBlind(): bigBlind;
+    }
+    public int getPlayerIndexById(int id) {
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getId() == id) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     public void nextRound() {

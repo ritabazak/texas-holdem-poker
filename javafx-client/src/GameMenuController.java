@@ -51,15 +51,7 @@ public class GameMenuController {
 
     @FXML private void startGameButtonAction(ActionEvent event) {
         engine.startGame();
-        parent.updateGameOn();
         parent.updateGameStatus();
-        engine.startHand();
-
-        if (!engine.isHumanTurn()) {
-            parent.nextTurn();
-        }
-
-        parent.updateHandStatus();
     }
 
     private void showAlert(String message) {

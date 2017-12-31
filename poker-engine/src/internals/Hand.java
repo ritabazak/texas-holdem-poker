@@ -51,6 +51,8 @@ public class Hand {
     private List<HandPlayer> winners = new LinkedList<>();
     private int remainder = 0;
     private boolean roundInProgress = true;
+    private int smallBlind;
+    private int bigBlind;
 
     public Hand(List<GamePlayer> players, int dealer, int smallBlind, int bigBlind, int pot){
         communityCards = Arrays.asList(
@@ -67,11 +69,13 @@ public class Hand {
 
         this.pot = pot;
         this.dealer = dealer;
+        this.smallBlind = smallBlind;
+        this.bigBlind = bigBlind;
 
         turn = getSmallIndex();
 
-        placeBet(smallBlind);
-        placeBet(bigBlind);
+        placeBet(this.smallBlind);
+        placeBet(this.bigBlind);
         cycleStart = turn;
     }
 
@@ -156,6 +160,12 @@ public class Hand {
     public boolean isRoundInProgress() {
         return roundInProgress;
     }
+    public int getSmallBlind() {
+        return smallBlind;
+    }
+    public int getBigBlind() {
+        return bigBlind;
+    }
 
     public void playComputerTurn() {
         if (getCurrentBet() > 0 ) {
@@ -165,7 +175,6 @@ public class Hand {
             check();
         }
     }
-
     private void nextTurn() {
         if (players.stream().allMatch(player -> player.getType() == Player.PlayerType.COMPUTER || player.isFolded())) {
             phase = HandPhase.FINISH;
@@ -193,7 +202,6 @@ public class Hand {
             roundInProgress = false;
         }
     }
-
     public void nextRound() {
         if (players.stream().anyMatch(player -> !player.isFolded() && player.getChips() == 0)) {
             phase = HandPhase.FINISH;
@@ -209,13 +217,11 @@ public class Hand {
             roundInProgress = true;
         }
     }
-
     public void fold() {
         getCurrentPlayer().fold();
         pot += players.get(turn).collectBet();
         nextTurn();
     }
-
     public void placeBet(int amount) {
         if (getCurrentPlayer().getChips() < amount) {
             fold();
@@ -226,16 +232,13 @@ public class Hand {
         cycleStart = turn;
         nextTurn();
     }
-
     public void raise(int raiseAmount) {
         placeBet(getCurrentBet() + raiseAmount);
     }
-
     public void call() {
         players.get(turn).placeBet(getCurrentBet());
         nextTurn();
     }
-
     public void check() {
         nextTurn();
     }
@@ -283,7 +286,6 @@ public class Hand {
         }
         catch (Exception ignored) {} // Will never happen since we always send 10 characters (5 cards)
     }
-
     private void splitPot() {
         remainder = pot % winners.size();
         winners.forEach(winner -> winner.win(pot / winners.size()));

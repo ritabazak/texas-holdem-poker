@@ -11,6 +11,7 @@ public class HandPlayer extends Player {
     private boolean folded = false;
     private boolean winner;
     private String ranking = "";
+    private int chipsWon = 0;
 
     public HandPlayer(GamePlayer gamePlayer, Card firstCard, Card secondCard) {
         super(gamePlayer);
@@ -33,6 +34,7 @@ public class HandPlayer extends Player {
     public boolean isFolded() {
         return folded;
     }
+    public int getChipsWon() { return chipsWon; }
 
     public void fold() {
         folded = true;
@@ -51,6 +53,7 @@ public class HandPlayer extends Player {
 
     public void win(int winnings) {
         addChips(winnings);
+        this.chipsWon = winnings;
         originalPlayer.addWin();
     }
 

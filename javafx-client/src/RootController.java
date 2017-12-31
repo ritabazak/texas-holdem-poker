@@ -2,6 +2,7 @@ import immutables.Card;
 import immutables.PlayerGameInfo;
 import immutables.PlayerHandInfo;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,24 +12,29 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RootController {
     @FXML private GameBoardController gameBoardController;
     @FXML private GameMenuController gameMenuController;
     @FXML private HandMenuController handMenuController;
+    @FXML private BetweenHandsMenuController betweenHandsMenuController;
     @FXML private GameInfoPaneController gameInfoPaneController;
 
     @FXML private Pane gameInfoPane;
     @FXML private Pane gameMenu;
     @FXML private Pane handMenu;
+    @FXML private Pane betweenHandsMenu;
 
     private PokerEngine engine;
     private Stage stage;
 
-    private BooleanProperty isGameOn = new SimpleBooleanProperty(false);
+    private BooleanProperty gameOn = new SimpleBooleanProperty(false);
     private BooleanProperty xmlLoaded = new SimpleBooleanProperty(false);
+    private BooleanProperty handInProgress = new SimpleBooleanProperty(false);
     private ObservableList<PlayerGameInfo> playerGameInfo = FXCollections.observableList(new ArrayList<>());
-    private IntegerProperty handsPlayed = new SimpleIntegerProperty(0);
+    private IntegerProperty handsPlayed = new SimpleIntegerProperty(-1);
     private IntegerProperty totalHands = new SimpleIntegerProperty(0);
     private IntegerProperty smallBlind = new SimpleIntegerProperty(0);
     private IntegerProperty bigBlind = new SimpleIntegerProperty(0);
@@ -42,16 +48,24 @@ public class RootController {
     private BooleanProperty betActive = new SimpleBooleanProperty(false);
     private IntegerProperty maxBet = new SimpleIntegerProperty(0);
 
+    private BooleanProperty disableHandMenu = new SimpleBooleanProperty(false);
+
     @FXML private void initialize() {
-        handMenu.visibleProperty().bind(isGameOn);
-        gameMenu.visibleProperty().bind(isGameOn.not());
+        handMenu.visibleProperty().bind(handInProgress);
+        gameMenu.visibleProperty().bind(gameOn.not().and(handsPlayed.isNotEqualTo(totalHands)));
+        betweenHandsMenu.visibleProperty().bind(
+                handInProgress.not()
+                        .and(gameOn.or(handsPlayed.isEqualTo(totalHands)))
+        );
 
         gameInfoPane.visibleProperty().bind(xmlLoaded);
         gameInfoPane.managedProperty().bind(xmlLoaded);
 
         gameMenuController.setParentController(this);
-        handMenuController.setParentController(this);
         gameMenuController.bindXmlLoaded(xmlLoaded);
+        handMenuController.setParentController(this);
+        betweenHandsMenuController.setParentController(this);
+        betweenHandsMenuController.setPlayerGameInfoProperty(playerGameInfo);
 
         gameInfoPaneController.bindGameStatusProperties(
                 playerGameInfo,
@@ -72,16 +86,22 @@ public class RootController {
 
         handMenuController.bindHandStatusProperties(
                 maxBet,
-                betActive
+                betActive,
+                disableHandMenu
+        );
+
+        betweenHandsMenuController.bindButtonDisabledStates(
+                handsPlayed,
+                totalHands
         );
     }
 
     public void setEngine(PokerEngine engine) {
         this.engine = engine;
-        updateGameOn();
         gameMenuController.setEngine(this.engine);
         handMenuController.setEngine(this.engine);
         gameBoardController.setEngine(this.engine);
+        betweenHandsMenuController.setEngine(this.engine);
     }
 
     public void updateGameStatus() {
@@ -94,38 +114,45 @@ public class RootController {
         initialSmallBlind.setValue(engine.getInitialSmallBlind());
         initialBigBlind.setValue(engine.getInitialBigBlind());
         buyIn.setValue(engine.getBuyIn());
+        handInProgress.setValue(engine.isHandInProgress());
+        gameOn.setValue(this.engine.isGameOn());
     }
 
     public void nextTurn() {
-        if (!engine.isHandInProgress()) {
-            finishHand();
-        }
-
         if (!engine.isRoundInProgress()) {
             engine.nextRound();
+        }
+
+        if (!engine.isHandInProgress()) {
+            finishHand();
         }
 
         updateHandStatus();
 
         Thread th = new Thread(() -> {
             try {
-                while (!engine.isHumanTurn()) {
+                Platform.runLater(() -> disableHandMenu.setValue(true));
+
+                while (engine.isHandInProgress() && !engine.isHumanTurn()) {
                     Thread.sleep(1000);
 
                     engine.playComputerTurn();
 
-                    if (!engine.isHandInProgress()) {
-                        finishHand();
-                    }
-
                     if (!engine.isRoundInProgress()) {
                         engine.nextRound();
                     }
+
+                    if (!engine.isHandInProgress()) {
+                        Platform.runLater(this::finishHand);
+                    }
+
                     Platform.runLater(this::updateHandStatus);
                 }
             }
-            catch (InterruptedException e) {
-                e.printStackTrace();
+            catch (InterruptedException ignored) {
+            }
+            finally {
+                Platform.runLater(() -> disableHandMenu.setValue(false));
             }
         });
 
@@ -133,22 +160,36 @@ public class RootController {
     }
 
     private void finishHand() {
-        Alert a = new Alert(Alert.AlertType.INFORMATION, "Egg");
-        a.showAndWait();
+        List<PlayerHandInfo> winners = engine.getWinners();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Hand Over!");
+        alert.setHeaderText("Winners:");
 
+        if (winners.get(0).getRanking().equals("")) {
+            alert.setContentText("All computers (all humans folded)");
+        }
+        else {
+            alert.setContentText(winners
+                    .stream()
+                    .map(winner -> String.format(
+                            "%s (+%d chips) -> %s",
+                            winner.getName(),
+                            winner.getChipsWon(),
+                            winner.getRanking()
+                    ))
+                    .collect(Collectors.joining("\n")));
+        }
+
+        alert.showAndWait();
+        resetHandStatus();
         updateGameStatus();
-        communityCards.clear();
-        playerHandInfo.clear();
-        pot.setValue(0);
-        maxBet.setValue(0);
-        betActive.setValue(false);
     }
 
     public void updateHandStatus() {
-        communityCards.clear();
+        resetHandStatus();
         communityCards.addAll(engine.getCommunityCards());
-        playerHandInfo.clear();
         playerHandInfo.addAll(engine.getHandStatus());
+        playerGameInfo.addAll(engine.getGameStatus());
         pot.setValue(engine.getPot());
         maxBet.setValue(engine.getMaxBet());
         betActive.setValue(engine.isBetActive());
@@ -160,12 +201,17 @@ public class RootController {
         handMenuController.setStage(this.stage);
     }
 
-    public void updateGameOn() {
-        isGameOn.setValue(this.engine.isGameOn());
-    }
-
     public void updateXmlLoaded() {
         xmlLoaded.setValue(this.engine.isXmlLoaded());
         updateGameStatus();
+    }
+
+    public void resetHandStatus() {
+        communityCards.clear();
+        playerHandInfo.clear();
+        playerGameInfo.clear();
+        pot.setValue(0);
+        betActive.setValue(false);
+        maxBet.setValue(0);
     }
 }

@@ -27,7 +27,7 @@ public class PokerEngine {
         return gameConfig != null;
     }
     public boolean isGameOn() {
-        return gameOn;
+        return gameOn || game.isHandInProgress();
     }
     List<PlayerGameInfo> getGameStatus() {
         return game.getGameStatus();
@@ -57,7 +57,7 @@ public class PokerEngine {
         return game.getPot();
     }
     public boolean isHandInProgress() {
-        return game.handInProgress();
+        return game.isHandInProgress();
     }
     public boolean isHumanTurn() {
         return game.isHumanTurn();
@@ -88,6 +88,9 @@ public class PokerEngine {
     }
     public int getInitialBigBlind() {
         return gameConfig.getBigBlind();
+    }
+    public int getPlayerIndexById(int id) {
+        return game.getPlayerIndexById(id);
     }
 
     public void loadConfigFile(String xmlFilePath)
@@ -131,6 +134,10 @@ public class PokerEngine {
 
         gameConfig = temp;
 
+        initGame();
+    }
+
+    private void initGame() {
         switch (gameConfig.getGameType()) {
             case BASIC:
                 game = new BasicGame(gameConfig);
@@ -178,5 +185,6 @@ public class PokerEngine {
     }
     public void endGame() {
         gameOn = false;
+        initGame();
     }
 }

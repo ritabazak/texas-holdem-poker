@@ -9,6 +9,7 @@ public class PlayerHandInfo extends PlayerInfo {
     private final boolean current;
     private final String ranking;
     private final boolean folded;
+    private final int chipsWon;
 
     public PlayerHandInfo(HandPlayer player,
                           boolean isDealer,
@@ -22,6 +23,7 @@ public class PlayerHandInfo extends PlayerInfo {
         this.bet = player.getBet();
         this.ranking = player.getRanking();
         this.folded = player.isFolded();
+        this.chipsWon = player.getChipsWon();
 
         if (showCards) {
             this.firstCard = player.getFirstCard();
@@ -50,4 +52,5 @@ public class PlayerHandInfo extends PlayerInfo {
     public boolean isFolded() {
         return folded;
     }
+    public int getChipsWon() { return chipsWon; }
 }

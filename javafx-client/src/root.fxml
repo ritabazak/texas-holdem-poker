@@ -11,6 +11,7 @@
         <StackPane>
             <fx:include fx:id="gameMenu" source="gameMenu.fxml" />
             <fx:include fx:id="handMenu" source="handMenu.fxml" />
+            <fx:include fx:id="betweenHandsMenu" source="betweenHandsMenu.fxml" />
         </StackPane>
     </bottom>
     <right>
