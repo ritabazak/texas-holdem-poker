@@ -1,6 +1,7 @@
 package internals;
 
 import immutables.Card;
+import immutables.HandReplayData;
 import immutables.PlayerGameInfo;
 import immutables.PlayerHandInfo;
 
@@ -44,10 +45,10 @@ public abstract class Game {
         return Duration.between(startTime, LocalTime.now());
     }
     protected int getSmallIndex() {
-        return (dealer + 1) % players.size();
+        return hand == null? (dealer + 1) % players.size(): hand.getSmallIndex();
     }
     protected int getBigIndex() {
-        return (dealer + 2) % players.size();
+        return hand == null? (dealer + 2) % players.size(): hand.getBigIndex();
     }
     public int getHandsPlayed() {
         return handIndex;
@@ -58,7 +59,7 @@ public abstract class Game {
                 .sum() * config.getBuyIn();
     }
     public List<PlayerHandInfo> getHandStatus(){
-        return hand.getHandStatus();
+        return hand.getHandStatus(false);
     }
     public List<PlayerGameInfo> getGameStatus() {
         return IntStream.range(0, players.size())
@@ -81,6 +82,12 @@ public abstract class Game {
     public void addBuyIn(int playerIndex) {
         players.get(playerIndex).addBuyIn(config.getBuyIn());
     }
+    public boolean retirePlayer(int playerIndex) {
+        players.remove(playerIndex);
+
+        return players.size() > 1 &&
+                players.stream().anyMatch(player -> player.getType() == Player.PlayerType.HUMAN);
+    }
 
     void shufflePlayers(){
         Collections.shuffle(players);
@@ -88,10 +95,7 @@ public abstract class Game {
 
     public int startHand() {
         hand = new Hand(
-                players
-                        .stream()
-                        .filter(player -> player.getChips() > 0)
-                        .collect(toList()),
+                players,
                 dealer,
                 smallBlind,
                 bigBlind,
@@ -115,8 +119,11 @@ public abstract class Game {
         return ++handIndex;
     }
 
+    public List<HandReplayData> getReplay() {
+        return hand.getReplayData();
+    }
     public List<Card> getCommunityCards() {
-        return hand.getCommunityCards();
+        return hand.getCommunityCards(false);
     }
     public int getPot() {
         return hand.getPot();
@@ -153,6 +160,9 @@ public abstract class Game {
         }
 
         return -1;
+    }
+    public boolean canStartHand() {
+        return players.stream().filter(player -> player.getChips() >= bigBlind).count() >= 2;
     }
 
     public void nextRound() {

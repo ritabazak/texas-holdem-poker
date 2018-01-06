@@ -1,5 +1,6 @@
 import immutables.PlayerGameInfo;
 import immutables.PlayerInfo;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,14 +23,15 @@ public class BetweenHandsMenuController {
     private PokerEngine engine;
     private ObservableList<PlayerGameInfo> playerGameInfoProperty;
 
-    public void bindButtonDisabledStates(IntegerProperty handsPlayed, IntegerProperty totalHands) {
+    public void bindButtonDisabledStates(IntegerProperty handsPlayed, IntegerProperty totalHands, BooleanProperty canStartHand) {
         replayButton.disableProperty().bind(handsPlayed.isEqualTo(0));
-        playNextHandButton.disableProperty().bind(handsPlayed.isEqualTo(totalHands));
-        buyInButton.disableProperty().bind(playNextHandButton.disableProperty());
+        playNextHandButton.disableProperty().bind(handsPlayed.isEqualTo(totalHands).or(canStartHand.not()));
+        buyInButton.disableProperty().bind(handsPlayed.isEqualTo(totalHands));
+        playNextHandButton.disableProperty().bind(canStartHand.not());
     }
 
     @FXML private void replayButtonAction(ActionEvent event) {
-        // FUCKING TODO
+        parent.startReplayMode();
     }
 
     @FXML private void playNextHandButtonAction(ActionEvent event) {
@@ -53,7 +55,42 @@ public class BetweenHandsMenuController {
         parent.updateGameStatus();
     }
 
+    @FXML private void retireButtonAction(ActionEvent actionEvent) {
+        List<PlayerGameInfo> humanPlayers = playerGameInfoProperty.stream()
+                .filter(player -> player.getType() == PlayerInfo.PlayerType.HUMAN)
+                .collect(Collectors.toList());
+
+        Optional<PlayerGameInfo> selectedPlayer = showPlayerSelectionDialog(humanPlayers);
+
+        selectedPlayer.ifPresent(player -> engine.retirePlayer(engine.getPlayerIndexById(player.getId())));
+
+        parent.updateGameStatus();
+
+        if (!parent.isGameOn()) {
+            parent.resetHandStatus();
+            parent.updateGameStatus();
+        }
+    }
+
     @FXML private void endGameButtonAction(ActionEvent event) {
+        int maxChips = playerGameInfoProperty
+                .stream()
+                .mapToInt(PlayerInfo::getChips)
+                .max().orElse(0);
+
+        PlayerGameInfo winner = playerGameInfoProperty
+                .stream()
+                .filter(player -> player.getChips() == maxChips)
+                .findFirst().orElse(playerGameInfoProperty.get(0));
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+        alert.setHeaderText("Winner:");
+        alert.setTitle("Game Finished!");
+        alert.setContentText(String.format("%s won the game with %d chips!", winner.getName(), winner.getChips()));
+
+        alert.showAndWait();
+
         engine.endGame();
         parent.updateGameStatus();
         parent.resetHandStatus();

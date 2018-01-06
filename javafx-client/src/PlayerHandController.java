@@ -1,6 +1,7 @@
 import immutables.Card;
 import immutables.PlayerHandInfo;
 import javafx.beans.binding.*;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -12,15 +13,19 @@ public class PlayerHandController {
     @FXML private CardController cardTwoImageController;
     @FXML private Label nameLabel;
     @FXML private Label typeLabel;
+    @FXML private Label chipsLabel;
     @FXML private Label betLabel;
     private BooleanBinding currentPlayer;
 
-    public void bindPlayerProperties(ObjectBinding<PlayerHandInfo> playerInfo) {
+    public void bindPlayerProperties(ObjectBinding<PlayerHandInfo> playerInfo, BooleanProperty handInProgress) {
         StringBinding safeName = Bindings.createStringBinding(() ->
                 playerInfo.get() == null? "": playerInfo.get().getName(), playerInfo);
 
         StringBinding safeType = Bindings.createStringBinding(() ->
                 playerInfo.get() == null? "": playerInfo.get().getState().toShortString(), playerInfo);
+
+        NumberBinding safeChips = Bindings.createIntegerBinding(() ->
+                playerInfo.get() == null? 0: playerInfo.get().getChips(), playerInfo);
 
         NumberBinding safeBet = Bindings.createIntegerBinding(() ->
                 playerInfo.get() == null? 0: playerInfo.get().getBet(), playerInfo);
@@ -31,13 +36,27 @@ public class PlayerHandController {
         ObjectBinding<Card> safeCardTwo = Bindings.createObjectBinding(() ->
                 playerInfo.get() == null? null: playerInfo.get().getSecondCard(), playerInfo);
 
+        BooleanBinding safePlayerFolded = Bindings.createBooleanBinding(() ->
+                playerInfo.get() != null && playerInfo.get().isFolded(), playerInfo);
+
         nameLabel.textProperty().bind(safeName);
         typeLabel.textProperty().bind(safeType);
+        chipsLabel.textProperty().bind(safeChips.asString());
         betLabel.textProperty().bind(safeBet.asString());
-        cardOneImageController.bindCard(safeCardOne);
-        cardTwoImageController.bindCard(safeCardTwo);
+        cardOneImageController.bindCard(safeCardOne, handInProgress.not());
+        cardTwoImageController.bindCard(safeCardTwo, handInProgress.not());
         typeLabel.visibleProperty().bind(safeType.isNotEmpty());
         typeLabel.managedProperty().bind(typeLabel.visibleProperty());
+        grid.opacityProperty().bind(
+                Bindings.when(safePlayerFolded)
+                        .then(0.5)
+                        .otherwise(1)
+        );
+
+        if (currentPlayer != null) {
+            currentPlayer.dispose();
+            currentPlayer = null;
+        }
 
         currentPlayer = Bindings.createBooleanBinding(() ->
                 playerInfo.get() != null && playerInfo.get().isCurrent(), playerInfo);

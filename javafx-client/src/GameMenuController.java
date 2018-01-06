@@ -3,10 +3,13 @@ import exceptions.DuplicatePlayerIdException;
 import exceptions.InvalidBlindsException;
 import exceptions.InvalidHandsCountException;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -14,11 +17,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class GameMenuController {
-    @FXML Button startGameButton;
+    @FXML private Button loadXmlButton;
+    @FXML private Button startGameButton;
+    @FXML private ProgressBar xmlLoadProgressBar;
 
     private Stage stage;
     private PokerEngine engine;
     private RootController parent;
+
+    private BooleanProperty disableButtons = new SimpleBooleanProperty(false);
 
     @FXML private void loadXmlButtonAction(ActionEvent event) {
         FileChooser chooser = new FileChooser();
@@ -29,23 +36,39 @@ public class GameMenuController {
         File f = chooser.showOpenDialog(stage);
 
         if (f != null) {
-            //TODO: Load Bar xml
-            try {
-                engine.loadConfigFile(f.getAbsolutePath());
+            disableButtons.setValue(true);
+
+            Task<Void> task = engine.loadConfigFileTask(f.getAbsolutePath());
+
+            xmlLoadProgressBar.progressProperty().bind(task.progressProperty());
+            task.setOnSucceeded((taskEvent) -> {
                 parent.updateXmlLoaded();
-            }
-            catch (FileNotFoundException | BadFileExtensionException e) {
-                // Cannot happen
-            }
-            catch (InvalidHandsCountException e) {
-                showAlert("Invalid hands count in the config file!");
-            }
-            catch (InvalidBlindsException e) {
-                showAlert("Invalid blinds in the config file!");
-            }
-            catch (DuplicatePlayerIdException e) {
-                showAlert("Duplicate player IDs in the config file!");
-            }
+                disableButtons.setValue(false);
+            });
+            task.setOnFailed(taskEvent -> {
+                if (task.getException() instanceof FileNotFoundException) {
+                    showAlert("File not found!");
+                }
+                if (task.getException() instanceof BadFileExtensionException) {
+                    showAlert("Invalid file extension!");
+                }
+                if (task.getException() instanceof InvalidHandsCountException) {
+                    showAlert("Invalid hands count in the config file!");
+                }
+                if (task.getException() instanceof InvalidBlindsException) {
+                    showAlert("Invalid blinds in the config file!");
+                }
+                if (task.getException() instanceof DuplicatePlayerIdException) {
+                    showAlert("Duplicate player IDs in the config file!");
+                }
+                disableButtons.setValue(false);
+                xmlLoadProgressBar.progressProperty().unbind();
+                xmlLoadProgressBar.setProgress(0);
+            });
+
+            Thread th = new Thread(task);
+            th.setDaemon(true);
+            th.start();
         }
     }
 
@@ -57,7 +80,7 @@ public class GameMenuController {
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setContentText(message + "\nPlease try again.");
-        alert.show();
+        alert.showAndWait();
     }
 
     public void setStage(Stage stage) {
@@ -73,6 +96,7 @@ public class GameMenuController {
     }
 
     public void bindXmlLoaded(BooleanProperty xmlLoaded) {
-        startGameButton.disableProperty().bind(xmlLoaded.not());
+        loadXmlButton.disableProperty().bind(disableButtons);
+        startGameButton.disableProperty().bind(xmlLoaded.not().or(disableButtons));
     }
 }

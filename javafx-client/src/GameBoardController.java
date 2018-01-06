@@ -1,9 +1,12 @@
 import immutables.Card;
 import immutables.PlayerHandInfo;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -34,6 +37,7 @@ public class GameBoardController {
     @FXML private GridPane tableCenter;
     @FXML private Label tableCenterPotLabel;
 
+    private BooleanProperty handInProgress;
     private IntegerBinding playerCount;
 
     private PokerEngine engine;
@@ -42,20 +46,31 @@ public class GameBoardController {
         this.engine = engine;
     }
 
-    public void bindHandStatusProperties(ObservableList<Card> communityCards, ObservableList<PlayerHandInfo> playerHandInfo, IntegerProperty pot) {
-        tableCenterCard1Controller.bindCard(Bindings.valueAt(communityCards, 0));
-        tableCenterCard2Controller.bindCard(Bindings.valueAt(communityCards, 1));
-        tableCenterCard3Controller.bindCard(Bindings.valueAt(communityCards, 2));
-        tableCenterCard4Controller.bindCard(Bindings.valueAt(communityCards, 3));
-        tableCenterCard5Controller.bindCard(Bindings.valueAt(communityCards, 4));
+    public void bindHandStatusProperties(BooleanProperty handInProgress, ObservableList<Card> communityCards, ObservableList<PlayerHandInfo> playerHandInfo, IntegerProperty pot) {
+        BooleanBinding alwaysShow = new SimpleBooleanProperty(true).not().not();
+        this.handInProgress = handInProgress;
+
+        tableCenterCard1Controller.bindCard(Bindings.valueAt(communityCards, 0), alwaysShow);
+        tableCenterCard2Controller.bindCard(Bindings.valueAt(communityCards, 1), alwaysShow);
+        tableCenterCard3Controller.bindCard(Bindings.valueAt(communityCards, 2), alwaysShow);
+        tableCenterCard4Controller.bindCard(Bindings.valueAt(communityCards, 3), alwaysShow);
+        tableCenterCard5Controller.bindCard(Bindings.valueAt(communityCards, 4), alwaysShow);
         tableCenterPotLabel.textProperty().bind(pot.asString());
+
+        if (playerCount != null) {
+            playerCount.dispose();
+            playerCount = null;
+        }
 
         playerCount = Bindings.size(playerHandInfo);
 
-        playerLeft.visibleProperty().bind(playerCount.greaterThanOrEqualTo(3));
-        playerRight.visibleProperty().bind(playerCount.greaterThanOrEqualTo(3));
+        playerLeft.visibleProperty().bind(playerCount.greaterThanOrEqualTo(2));
+
+        playerRight.visibleProperty().bind(playerCount.greaterThanOrEqualTo(2));
+
         playerTopLeft.visibleProperty().bind(playerCount.greaterThanOrEqualTo(3));
-        tableCenter.visibleProperty().bind(playerCount.greaterThanOrEqualTo(3));
+
+        tableCenter.visibleProperty().bind(playerCount.greaterThanOrEqualTo(2));
 
         playerTopRight.visibleProperty().bind(playerCount.greaterThanOrEqualTo(5));
         playerTopRight.managedProperty().bind(playerTopRight.visibleProperty());
@@ -78,33 +93,39 @@ public class GameBoardController {
         ObjectBinding<PlayerHandInfo> player5 = Bindings.valueAt(playerHandInfo, 4);
         ObjectBinding<PlayerHandInfo> player6 = Bindings.valueAt(playerHandInfo, 5);
 
-        playerLeftController.bindPlayerProperties(player1);
-        playerTopLeftController.bindPlayerProperties(player2);
+        playerLeftController.bindPlayerProperties(player1, handInProgress);
 
-        if (count == 3) {
-            playerRightController.bindPlayerProperties(player3);
-            GridPane.setColumnSpan(playerTopLeft, 2);
+        if (count == 2) {
+            playerRightController.bindPlayerProperties(player2, handInProgress);
         }
-        else if (count == 4) {
-            playerRightController.bindPlayerProperties(player3);
-            playerBottomLeftController.bindPlayerProperties(player4);
-            GridPane.setColumnSpan(playerTopLeft, 2);
-            GridPane.setColumnSpan(playerBottomLeft, 2);
-        }
-        else if (count == 5) {
-            playerTopRightController.bindPlayerProperties(player3);
-            playerRightController.bindPlayerProperties(player4);
-            playerBottomLeftController.bindPlayerProperties(player5);
-            GridPane.setColumnSpan(playerTopLeft, 1);
-            GridPane.setColumnSpan(playerBottomLeft, 2);
-        }
-        else if (count == 6) {
-            playerTopRightController.bindPlayerProperties(player3);
-            playerRightController.bindPlayerProperties(player4);
-            playerBottomRightController.bindPlayerProperties(player5);
-            playerBottomLeftController.bindPlayerProperties(player6);
-            GridPane.setColumnSpan(playerTopLeft, 1);
-            GridPane.setColumnSpan(playerBottomLeft, 1);
+        else {
+            playerTopLeftController.bindPlayerProperties(player2, handInProgress);
+
+            if (count == 3) {
+                playerRightController.bindPlayerProperties(player3, handInProgress);
+                GridPane.setColumnSpan(playerTopLeft, 2);
+            }
+            else if (count == 4) {
+                playerRightController.bindPlayerProperties(player3, handInProgress);
+                playerBottomLeftController.bindPlayerProperties(player4, handInProgress);
+                GridPane.setColumnSpan(playerTopLeft, 2);
+                GridPane.setColumnSpan(playerBottomLeft, 2);
+            }
+            else if (count == 5) {
+                playerTopRightController.bindPlayerProperties(player3, handInProgress);
+                playerRightController.bindPlayerProperties(player4, handInProgress);
+                playerBottomLeftController.bindPlayerProperties(player5, handInProgress);
+                GridPane.setColumnSpan(playerTopLeft, 1);
+                GridPane.setColumnSpan(playerBottomLeft, 2);
+            }
+            else if (count == 6) {
+                playerTopRightController.bindPlayerProperties(player3, handInProgress);
+                playerRightController.bindPlayerProperties(player4, handInProgress);
+                playerBottomRightController.bindPlayerProperties(player5, handInProgress);
+                playerBottomLeftController.bindPlayerProperties(player6, handInProgress);
+                GridPane.setColumnSpan(playerTopLeft, 1);
+                GridPane.setColumnSpan(playerBottomLeft, 1);
+            }
         }
     }
 }

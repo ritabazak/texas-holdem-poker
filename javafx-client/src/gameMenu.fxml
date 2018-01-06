@@ -19,7 +19,8 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
     <children>
-        <Button maxHeight="1.7976931348623157E308"
+        <Button fx:id="loadXmlButton"
+                maxHeight="1.7976931348623157E308"
                 maxWidth="1.7976931348623157E308"
                 mnemonicParsing="false"
                 onAction="#loadXmlButtonAction"
@@ -28,7 +29,8 @@
                 text="Start Game" GridPane.columnIndex="1"
                 fx:id="startGameButton" disable="true"
                 onAction="#startGameButtonAction"/>
-        <ProgressBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" progress="0.0"
+        <ProgressBar fx:id="xmlLoadProgressBar"
+                     maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" progress="0.0"
                      GridPane.columnIndex="2" GridPane.columnSpan="3"/>
     </children>
     <padding>

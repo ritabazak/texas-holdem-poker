@@ -35,8 +35,8 @@ public class HandMenuController {
         foldButton.disableProperty().bind(disableMenu);
         checkButton.disableProperty().bind(disableMenu.or(betActive));
         callButton.disableProperty().bind(disableMenu.or(betActive.not()));
-        betButton.disableProperty().bind(disableMenu.or(betActive));
-        raiseButton.disableProperty().bind(disableMenu.or(betActive.not().and(maxBet.lessThanOrEqualTo(0))));
+        betButton.disableProperty().bind(disableMenu.or(betActive.or(maxBet.lessThanOrEqualTo(0))));
+        raiseButton.disableProperty().bind(disableMenu.or(betActive.not().or(maxBet.lessThanOrEqualTo(0))));
     }
 
     @FXML private void foldButtonAction(ActionEvent action){
@@ -55,24 +55,41 @@ public class HandMenuController {
     }
 
     @FXML private void betButtonAction(ActionEvent action) {
-        Optional<Integer> val = showSliderDialog(maxBet.intValue(), "Please enter a bet:");
+        int max = maxBet.intValue();
 
-        if (val.isPresent()) {
-            engine.placeBet(val.get());
+        if (max > 1) {
+
+            Optional<Integer> val = showSliderDialog(max, "Please enter a bet:");
+
+            if (val.isPresent()) {
+                engine.placeBet(val.get());
+                parent.nextTurn();
+            }
+        }
+        else {
+            engine.placeBet(1);
             parent.nextTurn();
         }
     }
 
     @FXML private void raiseButtonAction(ActionEvent action) {
-        Optional<Integer> val = showSliderDialog(maxBet.intValue(), "Please enter a raise:");
+        int max = maxBet.intValue();
 
-        if (val.isPresent()) {
-            engine.raise(val.get());
+        if (max > 1) {
+            Optional<Integer> val = showSliderDialog(maxBet.intValue(), "Please enter a raise:");
+
+            if (val.isPresent()) {
+                engine.raise(val.get());
+                parent.nextTurn();
+            }
+        }
+        else {
+            engine.raise(1);
             parent.nextTurn();
         }
     }
 
-    private Optional<Integer> showSliderDialog(int maxValue, String title){
+    private Optional<Integer> showSliderDialog(int maxValue, String title) {
         Dialog<Integer> dialog = new Dialog<>();
         dialog.setTitle("Prompt");
         dialog.setHeaderText(title);
@@ -97,7 +114,7 @@ public class HandMenuController {
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
 
         dialog.setResultConverter(buttonType ->
-                buttonType == ButtonType.OK? Double.valueOf(slider.getValue()).intValue(): null);
+                buttonType == ButtonType.OK ? Double.valueOf(slider.getValue()).intValue() : null);
 
         return dialog.showAndWait();
     }

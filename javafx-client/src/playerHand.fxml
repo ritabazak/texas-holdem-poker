@@ -38,6 +38,22 @@
 
     <fx:include fx:id="cardOneImage" source="card.fxml" GridPane.rowIndex="1" />
     <fx:include fx:id="cardTwoImage" source="card.fxml" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    <Label alignment="CENTER_RIGHT" text="Bet:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-    <Label fx:id="betLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+    <GridPane GridPane.rowIndex="2" hgap="20" GridPane.columnSpan="2">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+        </rowConstraints>
+
+        <Label text="Chips:" GridPane.halignment="CENTER" />
+        <Label fx:id="chipsLabel" GridPane.halignment="CENTER" text="0" GridPane.rowIndex="1" />
+
+        <Label text="Bet:" GridPane.halignment="CENTER" GridPane.columnIndex="1" />
+        <Label fx:id="betLabel" GridPane.halignment="CENTER" text="0" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+    </GridPane>
+
 </GridPane>

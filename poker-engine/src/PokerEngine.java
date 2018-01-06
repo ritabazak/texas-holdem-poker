@@ -10,6 +10,7 @@ import exceptions.BadFileExtensionException;
 import exceptions.DuplicatePlayerIdException;
 import exceptions.InvalidBlindsException;
 import exceptions.InvalidHandsCountException;
+import immutables.HandReplayData;
 import immutables.PlayerGameInfo;
 import immutables.PlayerHandInfo;
 import internals.BasicGame;
@@ -17,6 +18,7 @@ import immutables.Card;
 import internals.Game;
 import internals.GameConfig;
 import internals.MultiplayerGame;
+import javafx.concurrent.Task;
 
 public class PokerEngine {
     private boolean gameOn = false;
@@ -46,6 +48,9 @@ public class PokerEngine {
     }
     public List<Integer> getHumanIndices() {
         return game.getHumanIndices();
+    }
+    public List<HandReplayData> getReplay() {
+        return game.getReplay();
     }
     public List<PlayerHandInfo> getHandStatus() {
         return game.getHandStatus();
@@ -92,6 +97,52 @@ public class PokerEngine {
     public int getPlayerIndexById(int id) {
         return game.getPlayerIndexById(id);
     }
+    public boolean canStartHand() { return game.canStartHand(); }
+
+    private File checkFileStep1(String xmlFilePath)
+            throws FileNotFoundException,
+            BadFileExtensionException {
+
+        File file = new File(xmlFilePath);
+
+        if (!Files.exists(file.toPath())) {
+            throw new FileNotFoundException();
+        }
+
+        if (!file.getPath().toLowerCase().endsWith(".xml")) {
+            throw new BadFileExtensionException();
+        }
+
+        return file;
+    }
+
+    private GameConfig checkFileStep2(GameConfig config)
+            throws InvalidHandsCountException,
+            InvalidBlindsException,
+            DuplicatePlayerIdException {
+
+        if (config.getHandsCount() % config.getPlayerCount() != 0) {
+            throw new InvalidHandsCountException();
+        }
+
+        if (config.getSmallBlind() > config.getBigBlind()) {
+            throw new InvalidBlindsException();
+        }
+
+        if (config.getConfigPlayers() != null) {
+            Set<Integer> ids = config
+                    .getConfigPlayers()
+                    .stream()
+                    .map(GameConfig.ConfigPlayer::getId)
+                    .collect(Collectors.toSet());
+
+            if (ids.size() < config.getPlayerCount()) {
+                throw new DuplicatePlayerIdException();
+            }
+        }
+
+        return config;
+    }
 
     public void loadConfigFile(String xmlFilePath)
             throws FileNotFoundException,
@@ -100,41 +151,52 @@ public class PokerEngine {
             InvalidBlindsException,
             DuplicatePlayerIdException {
 
-        File f = new File(xmlFilePath);
+        File file = checkFileStep1(xmlFilePath);
 
-        if (!Files.exists(f.toPath())) {
-            throw new FileNotFoundException();
-        }
-
-        if (!f.getPath().toLowerCase().endsWith(".xml")) {
-            throw new BadFileExtensionException();
-        }
-
-        GameConfig temp = new GameConfig(f);
-
-        if (temp.getHandsCount() % temp.getPlayerCount() != 0) {
-            throw new InvalidHandsCountException();
-        }
-
-        if (temp.getSmallBlind() > temp.getBigBlind()) {
-            throw new InvalidBlindsException();
-        }
-
-        if (temp.getConfigPlayers() != null) {
-            Set<Integer> ids = temp
-                    .getConfigPlayers()
-                    .stream()
-                    .map(GameConfig.ConfigPlayer::getId)
-                    .collect(Collectors.toSet());
-
-            if (ids.size() < temp.getPlayerCount()) {
-                throw new DuplicatePlayerIdException();
-            }
-        }
-
-        gameConfig = temp;
+        gameConfig = checkFileStep2(new GameConfig(file));
 
         initGame();
+    }
+
+    public Task<Void> loadConfigFileTask(String xmlFilePath) {
+        return new Task<Void>() {
+            @Override
+            protected Void call()
+                    throws FileNotFoundException,
+                    BadFileExtensionException,
+                    InvalidHandsCountException,
+                    InvalidBlindsException,
+                    DuplicatePlayerIdException {
+                try {
+                    updateProgress(0, 3);
+
+                    File file = checkFileStep1(xmlFilePath);
+
+                    for (int i = 10; i > 0; i--) {
+                        Thread.sleep(50);
+                        updateProgress(1.0/i, 3);
+                    }
+
+                    gameConfig = checkFileStep2(new GameConfig(file));
+
+                    for (int i = 10; i > 0; i--) {
+                        Thread.sleep(50);
+                        updateProgress(1 + 1.0/i, 3);
+                    }
+
+                    initGame();
+
+                    for (int i = 10; i > 0; i--) {
+                        Thread.sleep(50);
+                        updateProgress(2 + 1.0/i, 3);
+                    }
+                }
+                catch (InterruptedException ignored) {
+                }
+
+                return null;
+            }
+        };
     }
 
     private void initGame() {
@@ -156,11 +218,16 @@ public class PokerEngine {
     }
     public void startHand() {
         if (game.startHand() == getHandsCount()) {
-            gameOn = false;
+            endGame();
         }
     }
     public void addBuyIn(int playerIndex) {
         game.addBuyIn(playerIndex);
+    }
+    public void retirePlayer(int playerIndex) {
+        if (!game.retirePlayer(playerIndex)) {
+            endGame();
+        }
     }
     public void fold() {
         game.fold();

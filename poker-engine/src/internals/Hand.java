@@ -2,6 +2,7 @@ package internals;
 
 import com.rundef.poker.EquityCalculator;
 import immutables.Card;
+import immutables.HandReplayData;
 import immutables.PlayerHandInfo;
 
 import java.util.*;
@@ -54,7 +55,9 @@ public class Hand {
     private int smallBlind;
     private int bigBlind;
 
-    public Hand(List<GamePlayer> players, int dealer, int smallBlind, int bigBlind, int pot){
+    private List<HandReplayData> replayData = new LinkedList<>();
+
+    public Hand(List<GamePlayer> players, int dealer, int smallBlind, int bigBlind, int pot) {
         communityCards = Arrays.asList(
                 deck.dealCard(),
                 deck.dealCard(),
@@ -72,26 +75,44 @@ public class Hand {
         this.smallBlind = smallBlind;
         this.bigBlind = bigBlind;
 
+        this.players.forEach(player -> {
+            if (player.getChips() < bigBlind) {
+                player.fold();
+            }
+        });
+
         turn = getSmallIndex();
 
         placeBet(this.smallBlind);
         placeBet(this.bigBlind);
-        cycleStart = turn;
     }
 
-    private int getSmallIndex() {
-        return (dealer + 1) % players.size();
+    public int getSmallIndex() {
+        int smallIndex = dealer;
+
+        if (players.stream().allMatch(HandPlayer::isFolded)) {
+            return (smallIndex + 1) % players.size();
+        }
+
+        return getNextNotFoldedPlayer(smallIndex);
     }
-    private int getBigIndex() {
-        return (dealer + 2) % players.size();
+    public int getBigIndex() {
+        int bigIndex = getSmallIndex();
+
+        if (players.stream().allMatch(HandPlayer::isFolded)) {
+            return (bigIndex + 1) % players.size();
+        }
+
+        return getNextNotFoldedPlayer(bigIndex);
     }
     private HandPlayer getCurrentPlayer() {
         return players.get(turn);
     }
-    public List<Card> getCommunityCards() {
+    public List<Card> getCommunityCards(boolean revealCard) {
         return IntStream.range(0, communityCards.size())
                 .mapToObj(i ->
                         (
+                                revealCard ||
                                 phase.isAfter(HandPhase.RIVER) ||
                                 (i < 4 && phase.isAfter(HandPhase.TURN)) ||
                                 (i < 3 && phase.isAfter(HandPhase.FLOP)) ?
@@ -99,7 +120,7 @@ public class Hand {
                         )
                 ).collect(toList());
     }
-    public List<PlayerHandInfo> getHandStatus() {
+    public List<PlayerHandInfo> getHandStatus(boolean revealCard) {
         return IntStream.range(0, players.size())
                 .mapToObj(i ->
                         new PlayerHandInfo(
@@ -108,7 +129,12 @@ public class Hand {
                                 i == getSmallIndex(),
                                 i == getBigIndex(),
                                 roundInProgress && i == turn,
-                                phase == HandPhase.FINISH || (players.get(i).getType() == Player.PlayerType.HUMAN && i == turn)
+                                revealCard ||
+                                        phase == HandPhase.FINISH ||
+                                        (
+                                                players.get(i).getType() == Player.PlayerType.HUMAN &&
+                                                        i == turn
+                                        )
                         )
                 ).collect(toList());
     }
@@ -139,8 +165,9 @@ public class Hand {
         return Math.min(
                 players
                         .stream()
+                        .filter(player -> !player.isFolded())
                         .mapToInt(player -> player.getChips() + player.getBet())
-                        .min().orElse(Integer.MAX_VALUE) - getCurrentBet(),
+                        .min().orElse(Integer.MAX_VALUE),
 
                 players
                         .stream()
@@ -176,6 +203,8 @@ public class Hand {
         }
     }
     private void nextTurn() {
+        addSnapshot();
+
         if (players.stream().allMatch(player -> player.getType() == Player.PlayerType.COMPUTER || player.isFolded())) {
             phase = HandPhase.FINISH;
 
@@ -189,15 +218,10 @@ public class Hand {
             return;
         }
 
-        do {
-            turn = (turn + 1) % players.size();
-        }
-        while (getCurrentPlayer().isFolded());
+        turn = getNextNotFoldedPlayer(turn);
 
         if (turn == cycleStart) {
             pot += players.stream().mapToInt(HandPlayer::collectBet).sum();
-
-            cycleStart = turn;
 
             roundInProgress = false;
         }
@@ -218,16 +242,15 @@ public class Hand {
         }
     }
     public void fold() {
+        if (turn == cycleStart) {
+            cycleStart = getNextNotFoldedPlayer(cycleStart);
+        }
+
         getCurrentPlayer().fold();
-        pot += players.get(turn).collectBet();
+        pot += getCurrentPlayer().collectBet();
         nextTurn();
     }
     public void placeBet(int amount) {
-        if (getCurrentPlayer().getChips() < amount) {
-            fold();
-            return;
-        }
-
         getCurrentPlayer().placeBet(amount);
         cycleStart = turn;
         nextTurn();
@@ -236,7 +259,7 @@ public class Hand {
         placeBet(getCurrentBet() + raiseAmount);
     }
     public void call() {
-        players.get(turn).placeBet(getCurrentBet());
+        getCurrentPlayer().placeBet(getCurrentBet());
         nextTurn();
     }
     public void check() {
@@ -287,8 +310,32 @@ public class Hand {
         catch (Exception ignored) {} // Will never happen since we always send 10 characters (5 cards)
     }
     private void splitPot() {
-        remainder = pot % winners.size();
-        winners.forEach(winner -> winner.win(pot / winners.size()));
-        pot = remainder;
+        if (winners.size() > 0) {
+            remainder = pot % winners.size();
+            winners.forEach(winner -> winner.win(pot / winners.size()));
+            pot = remainder;
+        }
+    }
+
+    private void addSnapshot() {
+        replayData.add(
+                new HandReplayData(
+                        getHandStatus(true),
+                        getCommunityCards(true),
+                        pot
+                )
+        );
+    }
+    public List<HandReplayData> getReplayData() {
+        return replayData;
+    }
+
+    private int getNextNotFoldedPlayer(int i) {
+        do {
+            i = (i + 1) % players.size();
+        }
+        while (players.get(i).isFolded());
+
+        return i;
     }
 }
