@@ -48,6 +48,8 @@ public class Hand {
     private int turn;
     private int cycleStart;
     private int dealer;
+    private int smallIndex;
+    private int bigIndex;
     private HandPhase phase = HandPhase.PRE_FLOP;
     private List<HandPlayer> winners = new LinkedList<>();
     private int remainder = 0;
@@ -81,29 +83,21 @@ public class Hand {
             }
         });
 
-        turn = getSmallIndex();
+        turn = getNextNotFoldedPlayer(dealer);
 
+        smallIndex = turn;
         placeBet(this.smallBlind);
+
+        bigIndex = turn;
         placeBet(this.bigBlind);
     }
 
     public int getSmallIndex() {
-        int smallIndex = dealer;
-
-        if (players.stream().allMatch(HandPlayer::isFolded)) {
-            return (smallIndex + 1) % players.size();
-        }
-
-        return getNextNotFoldedPlayer(smallIndex);
+        return smallIndex;
     }
+
     public int getBigIndex() {
-        int bigIndex = getSmallIndex();
-
-        if (players.stream().allMatch(HandPlayer::isFolded)) {
-            return (bigIndex + 1) % players.size();
-        }
-
-        return getNextNotFoldedPlayer(bigIndex);
+        return bigIndex;
     }
     private HandPlayer getCurrentPlayer() {
         return players.get(turn);
@@ -126,8 +120,8 @@ public class Hand {
                         new PlayerHandInfo(
                                 players.get(i),
                                 i == dealer,
-                                i == getSmallIndex(),
-                                i == getBigIndex(),
+                                i == smallIndex,
+                                i == bigIndex,
                                 roundInProgress && i == turn,
                                 revealCard ||
                                         phase == HandPhase.FINISH ||
@@ -145,8 +139,8 @@ public class Hand {
                         new PlayerHandInfo(
                                 players.get(i),
                                 i == dealer,
-                                i == getSmallIndex(),
-                                i == getBigIndex(),
+                                i == smallIndex,
+                                i == bigIndex,
                                 i == turn,
                                 true
                         )

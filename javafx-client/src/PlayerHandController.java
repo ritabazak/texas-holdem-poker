@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 
 public class PlayerHandController {
     @FXML private GridPane grid;
@@ -41,12 +42,18 @@ public class PlayerHandController {
 
         nameLabel.textProperty().bind(safeName);
         typeLabel.textProperty().bind(safeType);
+        typeLabel.visibleProperty().bind(safeType.isNotEmpty());
+        typeLabel.managedProperty().bind(typeLabel.visibleProperty());
+        typeLabel.fontProperty().bind(
+                Bindings
+                        .when(safeType.isEqualTo("B+D"))
+                        .then(Font.font(8))
+                        .otherwise(Font.getDefault())
+        );
         chipsLabel.textProperty().bind(safeChips.asString());
         betLabel.textProperty().bind(safeBet.asString());
         cardOneImageController.bindCard(safeCardOne, handInProgress.not());
         cardTwoImageController.bindCard(safeCardTwo, handInProgress.not());
-        typeLabel.visibleProperty().bind(safeType.isNotEmpty());
-        typeLabel.managedProperty().bind(typeLabel.visibleProperty());
         grid.opacityProperty().bind(
                 Bindings.when(safePlayerFolded)
                         .then(0.5)

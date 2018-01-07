@@ -11,7 +11,7 @@ public class PlayerInfo {
         }
     }
     public enum PlayerState {
-        NONE, DEALER, SMALL, BIG;
+        NONE, DEALER, SMALL, BIG, BIG_AND_DEALER;
 
         public String toShortString() {
             switch (this) {
@@ -21,6 +21,8 @@ public class PlayerInfo {
                     return "B";
                 case SMALL:
                     return "S";
+                case BIG_AND_DEALER:
+                    return "B+D";
                 default:
                 case NONE:
                     return "";
@@ -38,22 +40,25 @@ public class PlayerInfo {
                       boolean isDealer,
                       boolean isSmall,
                       boolean isBig) {
-        this.type = player.getType().toPlayerInfo();
-        this.chips = player.getChips();
-        this.name = player.getName();
-        this.id = player.getId();
+        type = player.getType().toPlayerInfo();
+        chips = player.getChips();
+        name = player.getName();
+        id = player.getId();
 
-        if (isDealer) {
-            this.state = PlayerState.DEALER;
+        if (isDealer && isBig) {
+            state = PlayerState.BIG_AND_DEALER;
+        }
+        else if (isDealer) {
+            state = PlayerState.DEALER;
         }
         else if (isSmall) {
-            this.state = PlayerState.SMALL;
+            state = PlayerState.SMALL;
         }
         else if (isBig) {
-            this.state = PlayerState.BIG;
+            state = PlayerState.BIG;
         }
         else {
-            this.state = PlayerState.NONE;
+            state = PlayerState.NONE;
         }
     }
 
