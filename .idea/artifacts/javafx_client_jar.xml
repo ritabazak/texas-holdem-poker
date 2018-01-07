@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="javafx-client:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/javafx_client_jar</output-path>
+    <root id="archive" name="javafx-client.jar">
+      <element id="module-output" name="javafx-client" />
+      <element id="module-output" name="poker-engine" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/HandRank.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
