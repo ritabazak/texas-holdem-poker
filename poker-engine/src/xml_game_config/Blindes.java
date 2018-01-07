@@ -41,21 +41,21 @@ import javax.xml.bind.annotation.XmlType;
 public class Blindes {
 
     @XmlElement(name = "Big")
-    protected byte big;
+    protected int big;
     @XmlElement(name = "Small")
-    protected byte small;
+    protected int small;
     @XmlAttribute(name = "max-total-rounds")
-    protected Byte maxTotalRounds;
+    protected int maxTotalRounds;
     @XmlAttribute(name = "fixed", required = true)
     protected boolean fixed;
     @XmlAttribute(name = "additions")
-    protected Byte additions;
+    protected int additions;
 
     /**
      * Gets the value of the big property.
      * 
      */
-    public byte getBig() {
+    public int getBig() {
         return big;
     }
 
@@ -71,7 +71,7 @@ public class Blindes {
      * Gets the value of the small property.
      * 
      */
-    public byte getSmall() {
+    public int getSmall() {
         return small;
     }
 
@@ -91,7 +91,7 @@ public class Blindes {
      *     {@link Byte }
      *     
      */
-    public Byte getMaxTotalRounds() {
+    public int getMaxTotalRounds() {
         return maxTotalRounds;
     }
 
@@ -131,7 +131,7 @@ public class Blindes {
      *     {@link Byte }
      *     
      */
-    public Byte getAdditions() {
+    public int getAdditions() {
         return additions;
     }
 

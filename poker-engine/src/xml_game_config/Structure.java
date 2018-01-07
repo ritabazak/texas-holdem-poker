@@ -39,9 +39,9 @@ import javax.xml.bind.annotation.XmlType;
 public class Structure {
 
     @XmlElement(name = "HandsCount")
-    protected byte handsCount;
+    protected int handsCount;
     @XmlElement(name = "Buy")
-    protected byte buy;
+    protected int buy;
     @XmlElement(name = "Blindes", required = true)
     protected Blindes blindes;
 
@@ -49,7 +49,7 @@ public class Structure {
      * Gets the value of the handsCount property.
      * 
      */
-    public byte getHandsCount() {
+    public int getHandsCount() {
         return handsCount;
     }
 
@@ -65,7 +65,7 @@ public class Structure {
      * Gets the value of the buy property.
      * 
      */
-    public byte getBuy() {
+    public int getBuy() {
         return buy;
     }
 

@@ -43,7 +43,7 @@ public class Player {
     @XmlElement(name = "Type", required = true)
     protected String type;
     @XmlAttribute(name = "id", required = true)
-    protected short id;
+    protected int id;
 
     /**
      * Gets the value of the name property.
@@ -97,7 +97,7 @@ public class Player {
      * Gets the value of the id property.
      * 
      */
-    public short getId() {
+    public int getId() {
         return id;
     }
 
