@@ -164,7 +164,6 @@ public class RootController {
                     if (!engine.isHandInProgress()) {
                         Platform.runLater(this::finishHand);
                     }
-
                     Platform.runLater(this::updateHandStatus);
                 }
             }
@@ -172,6 +171,7 @@ public class RootController {
             }
             finally {
                 Platform.runLater(() -> disableHandMenu.setValue(false));
+
             }
         });
 
@@ -201,9 +201,9 @@ public class RootController {
                     .collect(Collectors.joining("\n")));
         }
 
-        alert.showAndWait();
-        resetHandStatus();
+        updateHandStatus();
         updateGameStatus();
+        alert.showAndWait();
     }
 
     public void updateXmlLoaded() {
