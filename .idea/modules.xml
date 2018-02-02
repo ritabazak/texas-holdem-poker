@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/javafx-client/javafx-client.iml" filepath="$PROJECT_DIR$/javafx-client/javafx-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/poker-engine/poker-engine.iml" filepath="$PROJECT_DIR$/poker-engine/poker-engine.iml" />
       <module fileurl="file://$PROJECT_DIR$/texas-holdem-poker.iml" filepath="$PROJECT_DIR$/texas-holdem-poker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web-client/web-client.iml" filepath="$PROJECT_DIR$/web-client/web-client.iml" />
     </modules>
   </component>
 </project>

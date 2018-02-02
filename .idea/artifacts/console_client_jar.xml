@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="console-client:jar">
+  <artifact type="jar" build-on-make="true" name="console-client:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/console_client_jar</output-path>
     <root id="archive" name="console-client.jar">
       <element id="module-output" name="console-client" />
