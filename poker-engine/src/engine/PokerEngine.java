@@ -1,3 +1,5 @@
+package engine;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
@@ -31,7 +33,7 @@ public class PokerEngine {
     public boolean isGameOn() {
         return gameOn || game.isHandInProgress();
     }
-    List<PlayerGameInfo> getGameStatus() {
+    public List<PlayerGameInfo> getGameStatus() {
         return game.getGameStatus();
     }
     public int getHandsCount() {

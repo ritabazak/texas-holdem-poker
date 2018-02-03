@@ -1,3 +1,4 @@
+import engine.PokerEngine;
 import immutables.PlayerGameInfo;
 import immutables.PlayerInfo;
 import javafx.beans.property.BooleanProperty;
@@ -5,9 +6,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 
 import java.util.List;
 import java.util.Optional;
