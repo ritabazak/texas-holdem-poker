@@ -74,7 +74,7 @@ public class BetweenHandsMenuController {
     @FXML private void endGameButtonAction(ActionEvent event) {
         int maxChips = playerGameInfoProperty
                 .stream()
-                .mapToInt(PlayerInfo::getChips)
+                .mapToInt(PlayerGameInfo::getChips)
                 .max().orElse(0);
 
         PlayerGameInfo winner = playerGameInfoProperty

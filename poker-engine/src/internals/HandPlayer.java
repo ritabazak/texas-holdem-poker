@@ -8,6 +8,7 @@ public class HandPlayer extends Player {
     private final Card secondCard;
     private final GamePlayer originalPlayer;
     private int bet;
+    private int chips;
     private boolean folded = false;
     private boolean winner;
     private String ranking = "";
@@ -17,7 +18,7 @@ public class HandPlayer extends Player {
         super(gamePlayer);
 
         originalPlayer = gamePlayer;
-
+        chips = originalPlayer.getChips();
         this.firstCard = firstCard;
         this.secondCard = secondCard;
     }
@@ -30,6 +31,9 @@ public class HandPlayer extends Player {
     }
     public int getBet() {
         return bet;
+    }
+    public int getChips() {
+        return chips;
     }
     public boolean isFolded() {
         return folded;
@@ -57,15 +61,13 @@ public class HandPlayer extends Player {
         originalPlayer.addWin();
     }
 
-    @Override
-    protected void addChips(int chips) {
-        super.addChips(chips);
+    private void addChips(int chips) {
+        this.chips += chips;
         originalPlayer.addChips(chips);
     }
 
-    @Override
-    protected void subtractChips(int chips) {
-        super.subtractChips(chips);
+    private void subtractChips(int chips) {
+        this.chips -= chips;
         originalPlayer.subtractChips(chips);
     }
 

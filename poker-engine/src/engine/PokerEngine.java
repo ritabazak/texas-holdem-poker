@@ -4,28 +4,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import exceptions.BadFileExtensionException;
-import exceptions.DuplicatePlayerIdException;
-import exceptions.InvalidBlindsException;
-import exceptions.InvalidHandsCountException;
-import immutables.HandReplayData;
-import immutables.PlayerGameInfo;
-import immutables.PlayerHandInfo;
-import internals.BasicGame;
-import immutables.Card;
-import internals.Game;
-import internals.GameConfig;
-import internals.MultiplayerGame;
+import exceptions.*;
+import immutables.*;
+import internals.*;
 import javafx.concurrent.Task;
 
 public class PokerEngine {
     private boolean gameOn = false;
     private GameConfig gameConfig;
     private Game game;
+    private List<Player> players = new LinkedList<>();
+    private int id = 0;
 
     public boolean isXmlLoaded() {
         return gameConfig != null;
@@ -256,4 +250,20 @@ public class PokerEngine {
         gameOn = false;
         initGame();
     }
+
+
+    private boolean isUserTaken(String name) {
+        return players.stream().anyMatch(p -> p.getName().equals(name));
+    }
+    public void addUser(String name, Player.PlayerType type) throws UserNameAlreadyTakenException {
+        if (isUserTaken(name)) {
+            throw new UserNameAlreadyTakenException();
+        }
+        players.add(new Player(id++, name, type));
+    }
+
+    public List<PlayerInfo> getPlayers() {
+        return players.stream().map(PlayerInfo::new).collect(Collectors.toList());
+    }
+
 }
