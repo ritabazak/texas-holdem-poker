@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Texas Hold'Em Poker - Lobby</title>
+    <link rel="stylesheet" href="common/vendor/bootstrap-4.0.0-dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="common/vendor/fontawesome-free-5.0.6/web-fonts-with-css/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="common/vendor/toastr.min.css" />
+    <link rel="stylesheet" href="lobby.css" />
+    <link rel="stylesheet" href="common/styles.css" />
+</head>
+<body>
+    <div id="root"></div>
+
+    <script src="common/vendor/jquery-3.3.1.min.js"></script>
+    <script src="common/vendor/popper.min.js"></script>
+    <script src="common/vendor/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="common/vendor/toastr.min.js"></script>
+
+    <script src="common/vendor/react.production.min.js"></script>
+    <script src="common/vendor/react-dom.production.min.js"></script>
+    <script src="common/vendor/babel.min.js"></script>
+
+    <script src="common/api.js"></script>
+    <script type="text/jsx" src="components/lobby/Game.jsx"></script>
+    <script type="text/jsx" src="components/lobby/GameList.jsx"></script>
+    <script type="text/jsx" src="components/lobby/PlayerList.jsx"></script>
+    <script type="text/jsx" src="components/lobby/LobbyPage.jsx"></script>
+    <script type="text/jsx">
+        ReactDOM.render(
+            <LobbyPage />,
+            document.getElementById('root')
+        );
+    </script>
+</body>
+</html>
