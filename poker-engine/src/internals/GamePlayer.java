@@ -10,6 +10,11 @@ public class GamePlayer extends Player {
         chips = buyIn;
     }
 
+    public GamePlayer(Player player, int buyIn) {
+        super(player);
+        chips = buyIn;
+    }
+
     public void addBuyIn(int buyIn) {
         chips += buyIn;
         buyIns++;

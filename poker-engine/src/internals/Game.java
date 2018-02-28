@@ -1,5 +1,7 @@
 package internals;
 
+import exceptions.GameAlreadyInProgressException;
+import exceptions.GameFullException;
 import immutables.Card;
 import immutables.HandReplayData;
 import immutables.PlayerGameInfo;
@@ -14,27 +16,84 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
-public abstract class Game {
-    GameConfig config;
-    List<GamePlayer> players = new ArrayList<>();
+public class Game {
+    private int id;
+    private String title;
+    private String author;
+    private boolean gameOn = false;
+    private GameConfig config;
+    private List<GamePlayer> players = new ArrayList<>();
+    private int seats;
     private int dealer;
-    protected int handIndex = 0;
+    private int handIndex = 0;
     private Temporal startTime;
     private int smallBlind;
     private int bigBlind;
     private Hand hand;
 
-    Game(GameConfig config) {
+    public Game(int id, GameConfig config, String author) {
+        this.id = id;
         this.config = config;
+        this.author = author;
         Random rand = new Random();
         dealer = rand.nextInt(config.getPlayerCount());
 
+        title = config.getTitle();
+        seats = config.getPlayerCount();
         smallBlind = config.getSmallBlind();
         bigBlind = config.getBigBlind();
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void startTimer() {
         startTime = LocalTime.now();
+    }
+
+    public boolean isGameOn() {
+        return gameOn || isHandInProgress();
+    }
+    public int getBuyIn() {
+        return config.getBuyIn();
+    }
+    public int getInitialSmallBlind() {
+        return config.getSmallBlind();
+    }
+    public int getInitialBigBlind() {
+        return config.getBigBlind();
+    }
+    public int getHandsCount() {
+        return config.getHandsCount();
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    public int getPlayerCount() {
+        return players.size();
+    }
+
+    public boolean isFixedBlinds() {
+        return config.isFixedBlinds();
+    }
+
+    public int getBlindAddition() {
+        return isFixedBlinds()? 0: config.getBlindAddition();
+    }
+
+    public int getMaxTotalRoundsBlinds() {
+        return isFixedBlinds()? 0: config.getMaxTotalRounds();
     }
 
     public Duration getElapsedTime() {
@@ -91,6 +150,11 @@ public abstract class Game {
 
     void shufflePlayers(){
         Collections.shuffle(players);
+    }
+
+    public void startGame() {
+        gameOn = true;
+        startTimer();
     }
 
     public int startHand() {
@@ -185,5 +249,15 @@ public abstract class Game {
     }
     public void check() {
         hand.check();
+    }
+
+    public void addPlayer(Player player) throws GameAlreadyInProgressException, GameFullException {
+        if(isGameOn()) {
+            throw new GameAlreadyInProgressException();
+        }
+        if (players.size() == getSeats()) {
+            throw new GameFullException();
+        }
+        players.add(new GamePlayer(player, getBuyIn()));
     }
 }

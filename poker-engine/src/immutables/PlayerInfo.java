@@ -9,7 +9,6 @@ public class PlayerInfo {
         public String toShortString() {
              return (this == HUMAN) ? "H" : "C";
         }
-
     }
 
     private final PlayerType type;

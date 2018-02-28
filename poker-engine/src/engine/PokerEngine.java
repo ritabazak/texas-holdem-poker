@@ -1,8 +1,5 @@
 package engine;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.nio.file.Files;
 import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,26 +9,27 @@ import java.util.stream.Collectors;
 import exceptions.*;
 import immutables.*;
 import internals.*;
-import javafx.concurrent.Task;
 
 public class PokerEngine {
-    private boolean gameOn = false;
-    private GameConfig gameConfig;
     private Game game;
+    private List<Game> games = new LinkedList<>();
     private List<Player> players = new LinkedList<>();
-    private int id = 0;
+    private int playerId = 0;
+    private int gameId = 0;
 
-    public boolean isXmlLoaded() {
-        return gameConfig != null;
+    private Game getGame(int id) {
+        return games.stream().filter(g -> g.getId() == id).findFirst().orElse(null);
     }
-    public boolean isGameOn() {
-        return gameOn || game.isHandInProgress();
+    private Player getPlayer(String username) {
+        return players.stream().filter(p -> p.getName().equals(username)).findFirst().orElse(null);
+    }
+    public void addGame(String xmlContent, String author) throws InvalidBlindsException, InvalidHandsCountException, DuplicatePlayerIdException, DuplicateGameTitleException {
+        GameConfig config = new GameConfig(xmlContent);
+        config = verifyGameConfig(config);
+        games.add(new Game(gameId++, config, author));
     }
     public List<PlayerGameInfo> getGameStatus() {
         return game.getGameStatus();
-    }
-    public int getHandsCount() {
-        return gameConfig.getHandsCount();
     }
     public Duration getElapsedTime() {
         return game.getElapsedTime();
@@ -81,42 +79,18 @@ public class PokerEngine {
     public int getBigBlind() {
         return game.getBigBlind();
     }
-    public int getBuyIn() {
-        return gameConfig.getBuyIn();
-    }
-    public int getInitialSmallBlind() {
-        return gameConfig.getSmallBlind();
-    }
-    public int getInitialBigBlind() {
-        return gameConfig.getBigBlind();
-    }
     public int getPlayerIndexById(int id) {
         return game.getPlayerIndexById(id);
     }
     public boolean canStartHand() { return game.canStartHand(); }
 
-    private File checkFileStep1(String xmlFilePath)
-            throws FileNotFoundException,
-            BadFileExtensionException {
-
-        File file = new File(xmlFilePath);
-
-        if (!Files.exists(file.toPath())) {
-            throw new FileNotFoundException();
-        }
-
-        if (!file.getPath().toLowerCase().endsWith(".xml")) {
-            throw new BadFileExtensionException();
-        }
-
-        return file;
-    }
-
-    private GameConfig checkFileStep2(GameConfig config)
+    private GameConfig verifyGameConfig(GameConfig config)
             throws InvalidHandsCountException,
             InvalidBlindsException,
-            DuplicatePlayerIdException {
+            DuplicatePlayerIdException, DuplicateGameTitleException {
 
+        //TODO: add tests for Project3
+        //TODO: verify gameConfig.getGameType() == DYNAMIC_MULTIPLAYER
         if (config.getHandsCount() % config.getPlayerCount() != 0) {
             throw new InvalidHandsCountException();
         }
@@ -136,87 +110,17 @@ public class PokerEngine {
                 throw new DuplicatePlayerIdException();
             }
         }
-
+         if (games.stream().anyMatch(g -> g.getTitle().equals(config.getTitle()))) {
+            throw new DuplicateGameTitleException();
+         }
         return config;
     }
 
-    public void loadConfigFile(String xmlFilePath)
-            throws FileNotFoundException,
-            BadFileExtensionException,
-            InvalidHandsCountException,
-            InvalidBlindsException,
-            DuplicatePlayerIdException {
-
-        File file = checkFileStep1(xmlFilePath);
-
-        gameConfig = checkFileStep2(new GameConfig(file));
-
-        initGame();
-    }
-
-    public Task<Void> loadConfigFileTask(String xmlFilePath) {
-        return new Task<Void>() {
-            @Override
-            protected Void call()
-                    throws FileNotFoundException,
-                    BadFileExtensionException,
-                    InvalidHandsCountException,
-                    InvalidBlindsException,
-                    DuplicatePlayerIdException {
-                try {
-                    updateProgress(0, 3);
-
-                    File file = checkFileStep1(xmlFilePath);
-
-                    for (int i = 10; i > 0; i--) {
-                        Thread.sleep(50);
-                        updateProgress(1.0/i, 3);
-                    }
-
-                    gameConfig = checkFileStep2(new GameConfig(file));
-
-                    for (int i = 10; i > 0; i--) {
-                        Thread.sleep(50);
-                        updateProgress(1 + 1.0/i, 3);
-                    }
-
-                    initGame();
-
-                    for (int i = 10; i > 0; i--) {
-                        Thread.sleep(50);
-                        updateProgress(2 + 1.0/i, 3);
-                    }
-                }
-                catch (InterruptedException ignored) {
-                }
-
-                return null;
-            }
-        };
-    }
-
-    private void initGame() {
-        switch (gameConfig.getGameType()) {
-            case BASIC:
-                game = new BasicGame(gameConfig);
-                break;
-            case MULTIPLAYER:
-                game = new MultiplayerGame(gameConfig);
-                break;
-            case DYNAMIC_MULTIPLAYER:
-                //TODO: Implement this
-                break;
-        }
-    }
-    public void startGame() {
-        gameOn = true;
-        game.startTimer();
-    }
-    public void startHand() {
+    /*public void startHand() {
         if (game.startHand() == getHandsCount()) {
             endGame();
         }
-    }
+    }*/
     public void addBuyIn(int playerIndex) {
         game.addBuyIn(playerIndex);
     }
@@ -247,23 +151,34 @@ public class PokerEngine {
         game.nextRound();
     }
     public void endGame() {
-        gameOn = false;
-        initGame();
+        //gameOn = false;
+        //initGame();
     }
 
 
-    private boolean isUserTaken(String name) {
-        return players.stream().anyMatch(p -> p.getName().equals(name));
+    private boolean isUsernameTaken(String username) {
+        return players.stream().anyMatch(p -> p.getName().equals(username));
     }
-    public void addUser(String name, Player.PlayerType type) throws UserNameAlreadyTakenException {
-        if (isUserTaken(name)) {
-            throw new UserNameAlreadyTakenException();
+    public void addPlayer(String username, Player.PlayerType type) throws UsernameAlreadyTakenException {
+        if (isUsernameTaken(username)) {
+            throw new UsernameAlreadyTakenException();
         }
-        players.add(new Player(id++, name, type));
+        players.add(new Player(playerId++, username, type));
     }
 
     public List<PlayerInfo> getPlayers() {
         return players.stream().map(PlayerInfo::new).collect(Collectors.toList());
     }
 
+    public List<GameInfo> getGames() {
+        return games.stream().map(GameInfo::new).collect(Collectors.toList());
+    }
+
+    public void removePlayer(String name) {
+        players.stream().filter(p -> p.getName().equals(name)).findFirst().ifPresent(players::remove);
+    }
+
+    public void joinGame(int id, String username) throws GameFullException, GameAlreadyInProgressException {
+        getGame(id).addPlayer(getPlayer(username));
+    }
 }

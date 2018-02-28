@@ -8,7 +8,9 @@
           <element id="module-output" name="poker-engine" />
           <element id="javaee-facet-classes" facet="web-client/web/Web2" />
         </element>
-        <element id="directory" name="lib" />
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="gson-2.8.2" />
+        </element>
       </element>
       <element id="javaee-facet-resources" facet="web-client/web/Web" />
       <element id="javaee-facet-resources" facet="web-client/web/Web2" />

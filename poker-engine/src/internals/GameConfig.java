@@ -6,7 +6,9 @@ import xml_game_config.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLStreamReader;
 import java.io.File;
+import java.io.StringReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,8 @@ public class GameConfig {
     }
 
     private GameType gameType;
+    private String title;
+    private int seats;
     private boolean fixedBlinds;
     private int bigBlind;
     private int smallBlind;
@@ -63,9 +67,24 @@ public class GameConfig {
         }
     }
 
+    public GameConfig(String xmlContent) {
+        try {
+            JAXBContext jaxb = JAXBContext.newInstance(GameDescriptor.class);
+            Unmarshaller un = jaxb.createUnmarshaller();
+
+            GameDescriptor descriptor = (GameDescriptor)un.unmarshal(new StringReader(xmlContent));
+
+            parseDescriptor(descriptor);
+        }
+        catch (JAXBException e) {
+            System.out.println(e.toString());
+        }
+    }
+
     public GameType getGameType() {
         return gameType;
     }
+    public String getTitle() { return title; }
     public boolean isFixedBlinds() {
         return fixedBlinds;
     }
@@ -90,6 +109,9 @@ public class GameConfig {
     public int getPlayerCount() {
         if (gameType == GameType.BASIC) {
             return 4;
+        }
+        if (gameType == GameType.DYNAMIC_MULTIPLAYER) {
+            return seats;
         }
         return configPlayers.size();
     }
@@ -119,7 +141,8 @@ public class GameConfig {
     }
 
     private void parseDynamicPlayers(DynamicPlayers dynPlayers) {
-        //TODO: Parse this
+       title = dynPlayers.getGameTitle();
+       seats = dynPlayers.getTotalPlayers();
     }
 
     private void parseStructure(Structure structure) {
