@@ -1,8 +1,4 @@
 class LoginPage extends React.Component {
-    static ERRORS = {
-        'NAME_TAKEN': 'The name you have chosen is already in use.',
-        'NAME_EMPTY': 'Please enter a name.'
-    };
 
     constructor(props) {
         super(props);
@@ -23,28 +19,9 @@ class LoginPage extends React.Component {
     submitForm(e) {
         e.preventDefault();
 
-        fetch('api/login', {
-            method: 'POST',
-            body: JSON.stringify(this.state),
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        })
-            .then(res => res.json())
-            .then(resJson => {
-                if (resJson.success) {
-                    window.location.href = 'lobby.html'; //TODO
-                }
-                else {
-                    throw new Error(resJson.error);
-                }
-            })
-            .catch(err => {
-                this.setState({
-                    name: ''
-                });
-                toastr.error(LoginPage.ERRORS[err.message]);
-            });
+        Http.post('api/login', this.state)
+            .then(() => window.location.href = 'lobby.html')
+            .catch(() => this.setState({ name: '' }));
     }
 
     render() {
@@ -64,7 +41,7 @@ class LoginPage extends React.Component {
                             <label className="form-check-label">
                                 <input className="form-check-input" type="radio"
                                        name="playerType" value="human" checked={this.state.type === 'human'}
-                                       onChange={this.playerTypeSelect}/>
+                                       onChange={this.playerTypeSelect} />
                                 Human
                             </label>
                         </div>
@@ -79,7 +56,7 @@ class LoginPage extends React.Component {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary">Submit</button>
+                    <button type="submit" className="btn btn-primary" disabled={!this.state.name} >Submit</button>
                 </form>
             </div>
 
