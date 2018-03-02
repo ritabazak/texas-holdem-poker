@@ -9,7 +9,10 @@ public class GameInfo {
     private final String title;
     private final String author;
     private final boolean gameOn;
+    private final boolean joinable;
+    private final boolean handInProgress;
     private final int buyIn;
+    private final int handIndex;
     private final int handsCount;
     private final int seats;
     private final int playerCount;
@@ -25,7 +28,10 @@ public class GameInfo {
         title = game.getTitle();
         author = game.getAuthor();
         gameOn = game.isGameOn();
+        joinable = game.isJoinable();
+        handInProgress = game.isHandInProgress();
         buyIn = game.getBuyIn();
+        handIndex = game.getHandIndex();
         handsCount = game.getHandsCount();
         seats = game.getSeats();
         playerCount = game.getPlayerCount();
@@ -53,8 +59,16 @@ public class GameInfo {
         return gameOn;
     }
 
+    public boolean isHandInProgress() {
+        return handInProgress;
+    }
+
     public int getBuyIn() {
         return buyIn;
+    }
+
+    public int getHandIndex() {
+        return handIndex;
     }
 
     public int getHandsCount() {
@@ -91,5 +105,9 @@ public class GameInfo {
 
     public List<PlayerGameInfo> getPlayers() {
         return players;
+    }
+
+    public boolean isJoinable() {
+        return joinable;
     }
 }

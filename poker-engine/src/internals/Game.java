@@ -2,15 +2,7 @@ package internals;
 
 import exceptions.GameAlreadyInProgressException;
 import exceptions.GameFullException;
-import immutables.Card;
-import immutables.HandReplayData;
-import immutables.PlayerGameInfo;
-import immutables.PlayerHandInfo;
-
-import java.time.Duration;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
+import immutables.*;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -24,9 +16,8 @@ public class Game {
     private GameConfig config;
     private List<GamePlayer> players = new ArrayList<>();
     private int seats;
-    private int dealer;
+    private int dealer = 0;
     private int handIndex = 0;
-    private Temporal startTime;
     private int smallBlind;
     private int bigBlind;
     private Hand hand;
@@ -35,8 +26,6 @@ public class Game {
         this.id = id;
         this.config = config;
         this.author = author;
-        Random rand = new Random();
-        dealer = rand.nextInt(config.getPlayerCount());
 
         title = config.getTitle();
         seats = config.getPlayerCount();
@@ -46,10 +35,6 @@ public class Game {
 
     public int getId() {
         return id;
-    }
-
-    public void startTimer() {
-        startTime = LocalTime.now();
     }
 
     public boolean isGameOn() {
@@ -71,37 +56,23 @@ public class Game {
     public String getTitle() {
         return title;
     }
-
     public String getAuthor() {
         return author;
     }
-
     public int getSeats() {
         return seats;
     }
-
     public int getPlayerCount() {
         return players.size();
     }
-
     public boolean isFixedBlinds() {
         return config.isFixedBlinds();
     }
-
     public int getBlindAddition() {
         return isFixedBlinds()? 0: config.getBlindAddition();
     }
-
     public int getMaxTotalRoundsBlinds() {
         return isFixedBlinds()? 0: config.getMaxTotalRounds();
-    }
-
-    public Duration getElapsedTime() {
-        if (startTime == null) {
-            return Duration.of(0, ChronoUnit.SECONDS);
-        }
-
-        return Duration.between(startTime, LocalTime.now());
     }
     protected int getSmallIndex() {
         return hand == null? (dealer + 1) % players.size(): hand.getSmallIndex();
@@ -116,9 +87,6 @@ public class Game {
         return players.stream()
                 .mapToInt(GamePlayer::getBuyIns)
                 .sum() * config.getBuyIn();
-    }
-    public List<PlayerHandInfo> getHandStatus(){
-        return hand.getHandStatus(false);
     }
     public List<PlayerGameInfo> getGameStatus() {
         return IntStream.range(0, players.size())
@@ -138,26 +106,19 @@ public class Game {
                 .collect(toList());
     }
 
-    public void addBuyIn(int playerIndex) {
-        players.get(playerIndex).addBuyIn(config.getBuyIn());
+    public void addBuyIn(String username) {
+        getPlayer(username).addBuyIn(config.getBuyIn());
     }
-    public boolean retirePlayer(int playerIndex) {
-        players.remove(playerIndex);
+    public void retirePlayer(String username) {
+        players.remove(getPlayer(username));
 
-        return players.size() > 1 &&
-                players.stream().anyMatch(player -> player.getType() == Player.PlayerType.HUMAN);
-    }
-
-    void shufflePlayers(){
-        Collections.shuffle(players);
+        if (players.size() <= 1 ||
+                players.stream().noneMatch(player -> player.type == Player.PlayerType.HUMAN)) {
+            gameOn = false;
+        }
     }
 
-    public void startGame() {
-        gameOn = true;
-        startTimer();
-    }
-
-    public int startHand() {
+    public void startHand() {
         hand = new Hand(
                 players,
                 dealer,
@@ -180,7 +141,9 @@ public class Game {
             }
         }
 
-        return ++handIndex;
+        if (++handIndex == getHandsCount()) {
+            gameOn = false;
+        }
     }
 
     public List<HandReplayData> getReplay() {
@@ -207,9 +170,6 @@ public class Game {
     public boolean isBetActive() {
         return hand.isBetActive();
     }
-    public boolean isRoundInProgress() {
-        return hand.isRoundInProgress();
-    }
     public int getSmallBlind() {
         return hand != null? hand.getSmallBlind(): smallBlind;
     }
@@ -229,9 +189,6 @@ public class Game {
         return players.stream().filter(player -> player.getChips() >= bigBlind).count() >= 2;
     }
 
-    public void nextRound() {
-        hand.nextRound();
-    }
     public void playComputerTurn() {
         hand.playComputerTurn();
     }
@@ -259,5 +216,36 @@ public class Game {
             throw new GameFullException();
         }
         players.add(new GamePlayer(player, getBuyIn()));
+        if (players.size() == getSeats() && players.stream().anyMatch(p -> p.type == Player.PlayerType.HUMAN)) {
+            gameOn = true;
+        }
+    }
+
+    public HandInfo getHandInfo(String username) {
+        return hand != null? new HandInfo(hand, username): null;
+    }
+
+    public int getHandIndex() {
+        return handIndex;
+    }
+
+    private GamePlayer getPlayer(String username) {
+        return players.stream().filter(p -> p.name.equals(username)).findFirst().orElse(null);
+    }
+
+    public void setPlayerReady(String username, boolean ready) {
+        getPlayer(username).setReady(ready);
+        if (players.stream().allMatch(GamePlayer::isReady)) {
+            startHand();
+            players.forEach(p -> p.setReady(false));
+        }
+    }
+
+    public GameConfig getConfig() {
+        return config;
+    }
+
+    public boolean isJoinable() {
+        return handIndex == 0 && !gameOn;
     }
 }

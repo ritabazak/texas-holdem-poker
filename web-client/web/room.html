@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Texas Hold'Em Poker</title>
+    <link rel="stylesheet" href="common/vendor/bootstrap-4.0.0-dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="common/vendor/fontawesome-free-5.0.6/web-fonts-with-css/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="common/vendor/toastr.min.css" />
+    <link rel="stylesheet" href="room.css" />
+    <link rel="stylesheet" href="common/styles.css" />
+</head>
+<body>
+    <div id="root"></div>
+
+    <script src="common/vendor/jquery-3.3.1.min.js"></script>
+    <script src="common/vendor/popper.min.js"></script>
+    <script src="common/vendor/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="common/vendor/toastr.min.js"></script>
+
+    <script src="common/vendor/react.production.min.js"></script>
+    <script src="common/vendor/react-dom.production.min.js"></script>
+    <script src="common/vendor/babel.min.js"></script>
+
+    <script src="common/api.js"></script>
+    <script type="text/jsx" src="components/shared/Modal.jsx"></script>
+    <script type="text/jsx" src="components/room/Card.jsx"></script>
+    <script type="text/jsx" src="components/room/Player.jsx"></script>
+    <script type="text/jsx" src="components/room/Seat.jsx"></script>
+    <script type="text/jsx" src="components/room/PlayerList.jsx"></script>
+    <script type="text/jsx" src="components/room/Table.jsx"></script>
+    <script type="text/jsx" src="components/room/RoomPage.jsx"></script>
+    <script type="text/jsx">
+        ReactDOM.render(
+            <RoomPage />,
+            document.getElementById('root')
+        );
+    </script>
+</body>
+</html>

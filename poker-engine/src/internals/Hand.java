@@ -1,5 +1,6 @@
 package internals;
 
+
 import com.rundef.poker.EquityCalculator;
 import immutables.Card;
 import immutables.HandReplayData;
@@ -53,7 +54,6 @@ public class Hand {
     private HandPhase phase = HandPhase.PRE_FLOP;
     private List<HandPlayer> winners = new LinkedList<>();
     private int remainder = 0;
-    private boolean roundInProgress = true;
     private int smallBlind;
     private int bigBlind;
 
@@ -114,7 +114,7 @@ public class Hand {
                         )
                 ).collect(toList());
     }
-    public List<PlayerHandInfo> getHandStatus(boolean revealCard) {
+    public List<PlayerHandInfo> getHandStatus(boolean revealCard, String username) {
         return IntStream.range(0, players.size())
                 .mapToObj(i ->
                         new PlayerHandInfo(
@@ -122,16 +122,14 @@ public class Hand {
                                 i == dealer,
                                 i == smallIndex,
                                 i == bigIndex,
-                                roundInProgress && i == turn,
+                                i == turn,
                                 revealCard ||
                                         phase == HandPhase.FINISH ||
-                                        (
-                                                players.get(i).getType() == Player.PlayerType.HUMAN &&
-                                                        i == turn
-                                        )
+                                        players.get(i).getName().equals(username)
                         )
                 ).collect(toList());
     }
+
     public List<PlayerHandInfo> getWinners() {
         return IntStream.range(0, players.size())
                 .filter(i -> winners.contains(players.get(i)))
@@ -178,9 +176,6 @@ public class Hand {
     public boolean handInProgress() {
         return phase != HandPhase.FINISH;
     }
-    public boolean isRoundInProgress() {
-        return roundInProgress;
-    }
     public int getSmallBlind() {
         return smallBlind;
     }
@@ -196,6 +191,7 @@ public class Hand {
             check();
         }
     }
+
     private void nextTurn() {
         addSnapshot();
 
@@ -212,34 +208,40 @@ public class Hand {
             return;
         }
 
+        if (players.stream().filter(player -> !player.isFolded()).count() == 1) {
+            phase = HandPhase.FINISH;
+
+            winners = players.stream().filter(player -> !player.isFolded()).collect(toList());
+
+            splitPot();
+            return;
+        }
+
         turn = getNextNotFoldedPlayer(turn);
 
         if (turn == cycleStart) {
             pot += players.stream().mapToInt(HandPlayer::collectBet).sum();
 
-            roundInProgress = false;
-        }
-    }
-    public void nextRound() {
-        if (players.stream().anyMatch(player -> !player.isFolded() && player.getChips() == 0)) {
-            phase = HandPhase.FINISH;
-        }
-        else {
-            phase = phase.next();
-        }
+            if (players.stream().anyMatch(player -> !player.isFolded() && player.getChips() == 0)) {
+                phase = HandPhase.FINISH;
+            }
+            else {
+                phase = phase.next();
+            }
 
-        if (phase == HandPhase.FINISH) {
-            finish();
+            if (phase == HandPhase.FINISH) {
+                finish();
+            }
         }
-        else {
-            roundInProgress = true;
+        if (!isHumanTurn()){
+            playComputerTurn();
         }
     }
+
     public void fold() {
         if (turn == cycleStart) {
             cycleStart = getNextNotFoldedPlayer(cycleStart);
         }
-
         getCurrentPlayer().fold();
         pot += getCurrentPlayer().collectBet();
         nextTurn();
@@ -314,7 +316,7 @@ public class Hand {
     private void addSnapshot() {
         replayData.add(
                 new HandReplayData(
-                        getHandStatus(true),
+                        getHandStatus(true, null),
                         getCommunityCards(true),
                         pot
                 )
@@ -331,5 +333,9 @@ public class Hand {
         while (players.get(i).isFolded());
 
         return i;
+    }
+
+    private HandPlayer getPlayer(String username) {
+        return players.stream().filter(p -> p.name.equals(username)).findFirst().orElse(null);
     }
 }

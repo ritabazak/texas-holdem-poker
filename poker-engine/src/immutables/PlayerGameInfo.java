@@ -7,6 +7,7 @@ public class PlayerGameInfo extends PlayerInfo {
     private final int handsWon;
     private final int chips;
     private final PlayerState state;
+    private final boolean ready;
 
     public PlayerGameInfo(GamePlayer player,
                           boolean isDealer,
@@ -16,6 +17,7 @@ public class PlayerGameInfo extends PlayerInfo {
         this.buyIns = player.getBuyIns();
         this.handsWon = player.getWins();
         this.chips = player.getChips();
+        this.ready = player.isReady();
 
         if (isDealer && isBig) {
             state = PlayerState.BIG_AND_DEALER;
@@ -45,5 +47,8 @@ public class PlayerGameInfo extends PlayerInfo {
     }
     public int getChips() {
         return chips;
+    }
+    public boolean isReady() {
+        return ready;
     }
 }

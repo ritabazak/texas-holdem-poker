@@ -17,8 +17,8 @@ public class PokerEngine {
     private int playerId = 0;
     private int gameId = 0;
 
-    private Game getGame(int id) {
-        return games.stream().filter(g -> g.getId() == id).findFirst().orElse(null);
+    private Game getGame(int gameId) {
+        return games.stream().filter(g -> g.getId() == gameId).findFirst().orElse(null);
     }
     private Player getPlayer(String username) {
         return players.stream().filter(p -> p.getName().equals(username)).findFirst().orElse(null);
@@ -31,9 +31,6 @@ public class PokerEngine {
     public List<PlayerGameInfo> getGameStatus() {
         return game.getGameStatus();
     }
-    public Duration getElapsedTime() {
-        return game.getElapsedTime();
-    }
     public int getHandsPlayed() {
         return game.getHandsPlayed();
     }
@@ -45,9 +42,6 @@ public class PokerEngine {
     }
     public List<HandReplayData> getReplay() {
         return game.getReplay();
-    }
-    public List<PlayerHandInfo> getHandStatus() {
-        return game.getHandStatus();
     }
     public List<Card> getCommunityCards() {
         return game.getCommunityCards();
@@ -69,9 +63,6 @@ public class PokerEngine {
     }
     public boolean isBetActive() {
         return game.isBetActive();
-    }
-    public boolean isRoundInProgress() {
-        return game.isRoundInProgress();
     }
     public int getSmallBlind() {
         return game.getSmallBlind();
@@ -121,40 +112,37 @@ public class PokerEngine {
             endGame();
         }
     }*/
-    public void addBuyIn(int playerIndex) {
-        game.addBuyIn(playerIndex);
+    public void addBuyIn(int gameId, String username) {
+        getGame(gameId).addBuyIn(username);
     }
-    public void retirePlayer(int playerIndex) {
-        if (!game.retirePlayer(playerIndex)) {
-            endGame();
+    public void retirePlayer(int gameId, String username) {
+        Game g = getGame(gameId);
+
+        g.retirePlayer(username);
+
+        if (g.getPlayerCount() == 0) {
+            int i = games.indexOf(g);
+            games.set(i, new Game(g.getId(), g.getConfig(), g.getAuthor()));
         }
     }
-    public void fold() {
-        game.fold();
+    public void fold(int gameId) {
+        getGame(gameId).fold();
     }
-    public void raise(int raiseAmount) {
-        game.raise(raiseAmount);
+    public void raise(int gameId, int raiseAmount) {
+        getGame(gameId).raise(raiseAmount);
     }
-    public void placeBet(int bet) {
-        game.placeBet(bet);
+    public void placeBet(int gameId, int bet) {
+        getGame(gameId).placeBet(bet);
     }
-    public void call() {
-        game.call();
+    public void call(int gameId) {
+        getGame(gameId).call();
     }
-    public void check() {
-        game.check();
+    public void check(int gameId) {
+        getGame(gameId).check();
     }
     public void playComputerTurn() {
         game.playComputerTurn();
     }
-    public void nextRound() {
-        game.nextRound();
-    }
-    public void endGame() {
-        //gameOn = false;
-        //initGame();
-    }
-
 
     private boolean isUsernameTaken(String username) {
         return players.stream().anyMatch(p -> p.getName().equals(username));
@@ -178,7 +166,19 @@ public class PokerEngine {
         players.stream().filter(p -> p.getName().equals(name)).findFirst().ifPresent(players::remove);
     }
 
-    public void joinGame(int id, String username) throws GameFullException, GameAlreadyInProgressException {
-        getGame(id).addPlayer(getPlayer(username));
+    public void joinGame(int gameId, String username) throws GameFullException, GameAlreadyInProgressException {
+        getGame(gameId).addPlayer(getPlayer(username));
+    }
+
+    public GameInfo getGameInfo(int gameId) {
+        return new GameInfo(getGame(gameId));
+    }
+
+    public HandInfo getHandInfo(int gameId, String username) {
+        return getGame(gameId).getHandInfo(username);
+    }
+
+    public void setPlayerReady(int gameId, String username, boolean ready) {
+        getGame(gameId).setPlayerReady(username, ready);
     }
 }
