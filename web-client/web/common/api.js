@@ -8,8 +8,14 @@ const ERRORS = {
 };
 
 class Http {
-    static get(url) {
+    static get(url, queryParams) {
         return new Promise((resolve, reject) => {
+            if (queryParams) {
+                url += '?' + Object.keys(queryParams)
+                    .map(key => key + '=' + encodeURIComponent(queryParams[key]))
+                    .join('&');
+            }
+
             fetch(url, { credentials: 'same-origin' })
                 .then(httpRes => httpRes.json())
                 .then(res => {
@@ -27,8 +33,14 @@ class Http {
         });
     }
 
-    static post(url, data) {
+    static post(url, data, queryParams) {
         return new Promise((resolve, reject) => {
+            if (queryParams) {
+                url += '?' + Object.keys(queryParams)
+                    .map(key => key + '=' + encodeURIComponent(queryParams[key]))
+                    .join('&');
+            }
+
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -51,5 +63,25 @@ class Http {
                     reject(err);
                 });
         });
+    }
+}
+
+class Url {
+    static getParams() {
+        const params = {};
+
+        let i = window.location.href.indexOf('?');
+
+        if (i > -1) {
+            let encodedParams = window.location.href.substring(i + 1).split('&');
+            encodedParams.forEach(paramStr => {
+                let key = paramStr.split('=')[0];
+                let val = paramStr.split('=')[1];
+
+                params[key] = decodeURIComponent(val);
+            });
+        }
+
+        return params;
     }
 }

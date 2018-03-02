@@ -40,9 +40,8 @@ class LobbyPage extends React.Component {
     }
 
     joinGame(gameId) {
-        Http.post('api/room?id=' + encodeURIComponent(gameId))
+        Http.post('api/room', null, {id: gameId, method: 'JOIN'})
             .then(() => window.location.href = 'room.html?id=' + encodeURIComponent(gameId))
-            .catch(() => this.setState({ name: '' }));
     }
 
 

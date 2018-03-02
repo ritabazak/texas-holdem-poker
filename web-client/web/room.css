@@ -1,0 +1,178 @@
+.main-content .container {
+    height: 100%;
+    padding: 10px;
+}
+
+.player-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.player-list li {
+    margin: 6px 5px;
+    color: #828282;
+}
+
+.player-list li.current-user {
+    color: #000000;
+}
+
+.player-list li span {
+    margin: 0 5px;
+}
+
+footer {
+    padding: 0 5px 10px 5px;
+}
+
+footer button {
+    margin: 0 5px;
+}
+
+.game-table {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 2fr 3fr 3fr 2fr;
+    grid-template-rows: 2fr 3fr 2fr;
+    grid-gap: 5px;
+
+    color: #ffffff;
+    text-align: center;
+
+    background: url('./common/images/table-bg.jpg') center center;
+    background-size: 100% 100%;
+
+    border-radius: 50px;
+    border: 3px solid #000000;
+}
+
+.game-table .table-center {
+    grid-column: 2 / span 2;
+    grid-row: 2;
+}
+
+.game-table .player .player-info {
+    line-height: 30px;
+}
+
+.game-table .player .player-state {
+    background-image: url('./common/images/chip.png');
+    background-size: contain;
+    color: #000000;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.game-table .player .player-state.player-state-xs {
+    font-size: 8px;
+    font-weight: bold;
+}
+
+.game-table .player .cards {
+
+}
+
+.game-table img.poker-card {
+    height: 75px;
+    margin: 2px;
+ }
+
+.game-table .seat {
+    background-color: #000000;
+    filter: blur(10px);
+    opacity: 0.5;
+    border-radius: 100%;
+}
+
+.game-table .seat-0-2 {
+    grid-column: 1;
+    grid-row: 2;
+}
+.game-table .seat-1-2 {
+    grid-column: 4;
+    grid-row: 2;
+}
+
+.game-table .seat-0-3 {
+    grid-column: 1;
+    grid-row: 2;
+}
+.game-table .seat-1-3 {
+    grid-column: 2 / span 2;
+    grid-row: 1;
+}
+.game-table .seat-2-3 {
+    grid-column: 4;
+    grid-row: 2;
+}
+
+.game-table .seat-0-4 {
+    grid-column: 1;
+    grid-row: 2;
+}
+.game-table .seat-1-4 {
+    grid-column: 2 / span 2;
+    grid-row: 1;
+}
+.game-table .seat-2-4 {
+    grid-column: 4;
+    grid-row: 2;
+}
+.game-table .seat-3-4 {
+    grid-column: 2 / span 2;
+    grid-row: 3;
+}
+
+.game-table .seat-0-5 {
+    grid-column: 1;
+    grid-row: 2;
+}
+.game-table .seat-1-5 {
+    grid-column: 2;
+    grid-row: 1;
+}
+.game-table .seat-2-5 {
+    grid-column: 3;
+    grid-row: 1;
+}
+.game-table .seat-3-5 {
+    grid-column: 4;
+    grid-row: 2;
+}
+.game-table .seat-4-5 {
+    grid-column: 2 / span 2;
+    grid-row: 3;
+}
+
+.game-table .seat-0-6 {
+    grid-column: 1;
+    grid-row: 2;
+}
+.game-table .seat-1-6 {
+    grid-column: 2;
+    grid-row: 1;
+}
+.game-table .seat-2-6 {
+    grid-column: 3;
+    grid-row: 1;
+}
+.game-table .seat-3-6 {
+    grid-column: 4;
+    grid-row: 2;
+}
+.game-table .seat-4-6 {
+    grid-column: 3;
+    grid-row: 3;
+}
+.game-table .seat-5-6 {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.game-table .current-player {
+    border: 1px solid yellow;
+    border-radius: 10px;
+}

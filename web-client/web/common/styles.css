@@ -15,3 +15,43 @@
 .flex-wrap {
     flex-wrap: wrap;
 }
+
+.margin-t10 {
+    margin-top: 10px;
+}
+.margin-r10 {
+    margin-right: 10px;
+}
+.margin-b10 {
+    margin-bottom: 10px;
+}
+.margin-l10 {
+    margin-left: 10px;
+}
+
+.page {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    border: 1px solid black;
+}
+
+header {
+    border: 1px solid black;
+    text-align: center;
+}
+
+div.page-body {
+    border: 1px solid black;
+}
+
+div.page-body div.left-sidebar {
+    border: 1px solid black;
+
+}
+
+div.page-body div.main-content {
+    border: 1px solid black;
+}

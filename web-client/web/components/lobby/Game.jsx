@@ -7,7 +7,7 @@ class Game extends React.Component {
         const game = this.props.game;
 
         return (
-            <div className={"game-item flex-column" + (game.gameOn ? 'disabled': '')} onClick={() => this.props.onJoin(game.id)}>
+            <div className={"game-item flex-column" + (!game.joinable ? ' disabled': '')} onClick={() => game.joinable && this.props.onJoin(game.id)}>
                 <div className="title">{game.title}</div>
                 <div className="players">{game.playerCount}/{game.seats}</div>
                 <div className="author flex">Author: {game.author}</div>
