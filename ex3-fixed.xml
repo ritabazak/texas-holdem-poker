@@ -10,5 +10,5 @@
 			<Small>3</Small>
 		</Blindes>
 	</Structure>	
-	<DynamicPlayers game-title="sample game 2" total-players="2"/>
+	<DynamicPlayers game-title="Nachtze the King" total-players="2"/>
 </GameDescriptor>
