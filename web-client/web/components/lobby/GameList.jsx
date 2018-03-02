@@ -25,7 +25,7 @@ class GameList extends React.Component {
         return (
             <div className="game-list flex-row flex-wrap">
                 {this.props.games.map(g => <Game key={g.id} game={g} onJoin={this.props.onJoin} />)}
-                <div className="add-game" onClick={() => fileChooser.click()}>
+                <div className="game-item add-game" onClick={() => fileChooser.click()}>
                     <i className="fa fa-plus"></i>
                 </div>
 

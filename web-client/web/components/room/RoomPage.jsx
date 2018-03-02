@@ -150,11 +150,31 @@ class RoomPage extends React.Component {
 
             return (
                 <footer className="flex-row">
-                    <button className="flex btn btn-secondary" onClick={this.fold} disabled={disableFold}>Fold</button>
-                    <button className="flex btn btn-secondary" onClick={this.check} disabled={disableCheck}>Check</button>
-                    <button className="flex btn btn-secondary" onClick={this.call} disabled={disableCall}>Call</button>
-                    <button className="flex btn btn-secondary" onClick={() => this.betModal.show()} disabled={disableBet}>Bet</button>
-                    <button className="flex btn btn-secondary" onClick={() => this.raiseModal.show()} disabled={disableRaise}>Raise</button>
+                    <button className="flex btn btn-secondary" onClick={this.fold} disabled={disableFold}>
+                        <i className="fa fa-times"></i>
+                        &nbsp;
+                        Fold
+                    </button>
+                    <button className="flex btn btn-secondary" onClick={this.check} disabled={disableCheck}>
+                        <i className="far fa-hand-rock"></i>
+                        &nbsp;
+                        Check
+                    </button>
+                    <button className="flex btn btn-secondary" onClick={this.call} disabled={disableCall}>
+                        <i className="fa fa-balance-scale"></i>
+                        &nbsp;
+                        Call
+                    </button>
+                    <button className="flex btn btn-secondary" onClick={() => this.betModal.show()} disabled={disableBet}>
+                        <i className="fa fa-angle-up"></i>
+                        &nbsp;
+                        Bet
+                    </button>
+                    <button className="flex btn btn-secondary" onClick={() => this.raiseModal.show()} disabled={disableRaise}>
+                        <i className="fa fa-angle-double-up"></i>
+                        &nbsp;
+                        Raise
+                    </button>
                 </footer>
             );
         }
@@ -166,11 +186,26 @@ class RoomPage extends React.Component {
         return (
             <footer className="flex-row">
                 <button className="flex btn btn-secondary" onClick={this.toggleReady} disabled={disableReady}>
+                    {this.selfGamePlayer.ready && (
+                        <i className="fa fa-hourglass-half"></i>
+                    )}
+                    {!this.selfGamePlayer.ready && (
+                        <i className="fa fa-check"></i>
+                    )}
+                    &nbsp;
                     {!this.selfGamePlayer.ready && 'Ready'}
                     {this.selfGamePlayer.ready && 'Unready'}
                 </button>
-                <button className="flex btn btn-secondary" onClick={this.buyIn} disabled={disableBuyIn}>Buy-In</button>
-                <button className="flex btn btn-danger" onClick={this.leaveGame} disabled={disableLeaveGame}>Leave Game</button>
+                <button className="flex btn btn-secondary" onClick={this.buyIn} disabled={disableBuyIn}>
+                    <i className="fa fa-shopping-cart"></i>
+                    &nbsp;
+                    Buy-In
+                </button>
+                <button className="flex btn btn-danger" onClick={this.leaveGame} disabled={disableLeaveGame}>
+                    <i className="fa fa-sign-out-alt"></i>
+                    &nbsp;
+                    Leave Game
+                </button>
             </footer>
         );
     }
@@ -271,7 +306,11 @@ class RoomPage extends React.Component {
                     <h1 className="text-center">
                         {game.title}
                         &nbsp;
-                        (hand {game.handIndex}/{game.handsCount})
+                        (
+                        <i className="far fa-hand-paper"></i>
+                        &nbsp;
+                        {game.handIndex}/{game.handsCount}
+                        )
                     </h1>
                 </header>
 
@@ -288,7 +327,7 @@ class RoomPage extends React.Component {
                     </div>
 
                     <div className="main-content flex flex-column">
-                        <div className="container flex">
+                        <div className="flex">
                             <Table game={game} hand={hand} currentUser={this.selfGamePlayer} />
                         </div>
 

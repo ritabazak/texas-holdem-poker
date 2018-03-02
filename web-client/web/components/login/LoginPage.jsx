@@ -29,7 +29,7 @@ class LoginPage extends React.Component {
             <div className="container">
                 <h1 className="text-center">Welcome to the best Poker game ever!</h1>
 
-                <form onSubmit={this.submitForm}>
+                <form onSubmit={this.submitForm} style={{'margin-top': '50px'}}>
                     <div className="form-group">
                         <label>Name:</label>
                         <input type="text" className="form-control" value={this.state.name}
@@ -42,6 +42,8 @@ class LoginPage extends React.Component {
                                 <input className="form-check-input" type="radio"
                                        name="playerType" value="human" checked={this.state.type === 'human'}
                                        onChange={this.playerTypeSelect} />
+                                <i className="fa fa-user"></i>
+                                &nbsp;
                                 Human
                             </label>
                         </div>
@@ -51,12 +53,18 @@ class LoginPage extends React.Component {
                                 <input className="form-check-input" type="radio"
                                        name="playerType" value="computer" checked={this.state.type === 'computer'}
                                        onChange={this.playerTypeSelect} />
+                                <i className="fa fa-desktop"></i>
+                                &nbsp;
                                 Computer
                             </label>
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary" disabled={!this.state.name} >Submit</button>
+                    <button type="submit" className="btn btn-primary" disabled={!this.state.name} >
+                        <i className="fa fa-user-plus"></i>
+                        &nbsp;
+                        Login
+                    </button>
                 </form>
             </div>
 

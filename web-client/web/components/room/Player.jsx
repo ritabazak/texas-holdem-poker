@@ -15,8 +15,10 @@ class Player extends React.Component {
                     {player.name}
                 </div>
 
-                {player.ready && <i className="fa fa-check"></i>}
-                {!player.ready && <i className="fa fa-hourglass-half"></i>}
+                <span style={{'font-size': '36px'}}>
+                    {player.ready && <i className="fa fa-check"></i>}
+                    {!player.ready && <i className="fa fa-hourglass-half"></i>}
+                </span>
             </div>
         );
     }
@@ -32,7 +34,7 @@ class Player extends React.Component {
                     &nbsp;
                     {player.name}
                     &nbsp;
-                    {player.state && (
+                    {player.state !== 'NONE' && (
                         <span className={'player-state' + (player.state === 'BIG_AND_DEALER'? ' player-state-xs': '')}>
                             {player.state === 'DEALER' && 'D'}
                             {player.state === 'BIG' && 'B'}

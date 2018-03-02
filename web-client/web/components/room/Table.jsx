@@ -15,6 +15,7 @@ class Table extends React.Component {
         else {
             players = game.players;
         }
+
         let {seats} = game;
 
         let emptySeats = 'x'.repeat(seats - players.length)

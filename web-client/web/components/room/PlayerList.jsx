@@ -1,38 +1,36 @@
 class PlayerList extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {};
     }
 
     render() {
         let {players, currentUser} = this.props;
 
         return (
-            <ul className="player-list">
+            <table className="player-list">
                 {players.map(p => (
-                    <li key={p.name} className={p === currentUser? 'current-user': null}>
-                        <span>
+                    <tr key={p.name} className={p === currentUser? 'current-user': null}>
+                        <td className="flex">
                             {p.type === 'HUMAN' && <i className="fa fa-user"></i>}
                             {p.type === 'COMPUTER' && <i className="fa fa-desktop"></i>}
                             &nbsp;
                             {p.name}
-                        </span>
+                        </td>
 
-                        <span>
+                        <td>
                             <i className="fab fa-bitcoin"></i>
                             &nbsp;
                             {p.chips}
-                        </span>
+                        </td>
 
-                        <span>
+                        <td>
                             <i className="fa fa-trophy"></i>
                             &nbsp;
                             {p.handsWon}
-                        </span>
-                    </li>
+                        </td>
+                    </tr>
                 ))}
-            </ul>
+            </table>
         );
     }
 }

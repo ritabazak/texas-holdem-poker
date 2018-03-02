@@ -10,6 +10,7 @@ class Seat extends React.Component {
 
         return (
             <div className={'seat ' + className}>
+                <i className="fa fa-question"></i>
             </div>
         );
     }

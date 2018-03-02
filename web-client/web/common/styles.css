@@ -1,3 +1,16 @@
+body {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.pull-right {
+    float: right;
+}
+
+button.btn.btn-primary {
+    background-color: #004691;
+}
+
 .flex-row {
     display: flex;
     flex-direction: row;
@@ -35,23 +48,18 @@
     right: 0;
     bottom: 0;
     top: 0;
-    border: 1px solid black;
 }
 
 header {
-    border: 1px solid black;
     text-align: center;
 }
 
 div.page-body {
-    border: 1px solid black;
 }
 
 div.page-body div.left-sidebar {
-    border: 1px solid black;
 
 }
 
 div.page-body div.main-content {
-    border: 1px solid black;
 }
