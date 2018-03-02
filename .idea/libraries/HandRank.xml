@@ -1,6 +1,8 @@
 <component name="libraryTable">
   <library name="HandRank">
-    <CLASSES />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/HandRank.jar!/" />
+    </CLASSES>
     <JAVADOC />
     <SOURCES />
   </library>

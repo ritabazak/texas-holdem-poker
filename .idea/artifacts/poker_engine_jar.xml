@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/poker_engine_jar</output-path>
     <root id="archive" name="poker-engine.jar">
       <element id="module-output" name="poker-engine" />
+      <element id="library" level="project" name="HandRank" />
     </root>
   </artifact>
 </component>
