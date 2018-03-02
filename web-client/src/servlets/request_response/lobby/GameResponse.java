@@ -4,6 +4,7 @@ class GameResponse {
     private final int id;
     private final String title;
     private final String author;
+    private final boolean joinable;
     private final boolean gameOn;
     private final int handsCount;
     private final int buyIn;
@@ -18,6 +19,7 @@ class GameResponse {
     GameResponse(int id,
                  String title,
                  String author,
+                 boolean joinable,
                  boolean gameOn,
                  int handsCount,
                  int buyIn,
@@ -31,6 +33,7 @@ class GameResponse {
         this.id = id;
         this.title = title;
         this.author = author;
+        this.joinable = joinable;
         this.gameOn = gameOn;
         this.handsCount = handsCount;
         this.buyIn = buyIn;

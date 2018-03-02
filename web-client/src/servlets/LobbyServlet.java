@@ -29,15 +29,17 @@ public class LobbyServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("application/json");
 
-        Gson gson = new Gson();
+        String username = (String)request.getSession().getAttribute("USERNAME");
+
         EngineManager manager = EngineManager.getEngineFromContext(getServletContext());
         APIResponse<LobbyResponse> res = new APIResponse<>(new LobbyResponse(
                 manager.getPlayers(),
                 manager.getGames(),
-                (String)request.getSession().getAttribute("USERNAME")
+                username
         ));
 
         try (PrintWriter out = response.getWriter()) {
+            Gson gson = new Gson();
             out.print(gson.toJson(res));
             out.flush();
         }
@@ -67,12 +69,3 @@ public class LobbyServlet extends HttpServlet {
 
     }
 }
-
-/*
-{
-    success: true/false,
-    error: null/ { message: 'hi' },
-    data: null / { T }
-
-}
- */

@@ -4,6 +4,7 @@ import javax.servlet.ServletContext;
 import engine.PokerEngine;
 import exceptions.*;
 import immutables.GameInfo;
+import immutables.HandInfo;
 import immutables.PlayerInfo;
 import internals.Player;
 
@@ -37,15 +38,55 @@ public class EngineManager {
         return engine.getGames();
     }
 
-    public void addGame(String xmlContent, String username) throws InvalidBlindsException, InvalidHandsCountException, DuplicatePlayerIdException, DuplicateGameTitleException {
+    public synchronized void addGame(String xmlContent, String username) throws InvalidBlindsException, InvalidHandsCountException, DuplicatePlayerIdException, DuplicateGameTitleException {
         engine.addGame(xmlContent, username);
     }
 
-    public void removePlayer(String username) {
+    public synchronized void removePlayer(String username) {
         engine.removePlayer(username);
     }
 
-    public void joinGame(int id, String username) throws GameFullException, GameAlreadyInProgressException {
-        engine.joinGame(id, username);
+    public synchronized void joinGame(int gameId, String username) throws GameFullException, GameAlreadyInProgressException {
+        engine.joinGame(gameId, username);
+    }
+
+    public synchronized GameInfo getGameInfo(int gameId) {
+        return engine.getGameInfo(gameId);
+    }
+
+    public synchronized HandInfo getHandInfo(int gameId, String username) {
+        return engine.getHandInfo(gameId, username);
+    }
+
+    public synchronized void setPlayerReady(int gameId, String username, boolean ready) {
+        engine.setPlayerReady(gameId, username, ready);
+    }
+
+    public synchronized void buyIn(int gameId, String username) {
+        engine.addBuyIn(gameId, username);
+    }
+
+    public synchronized void leaveGame(int gameId, String username) {
+        engine.retirePlayer(gameId, username);
+    }
+
+    public synchronized void fold(int gameId) {
+        engine.fold(gameId);
+    }
+
+    public synchronized void check(int gameId) {
+        engine.check(gameId);
+    }
+
+    public synchronized void call(int gameId) {
+        engine.call(gameId);
+    }
+
+    public synchronized void bet(int gameId, int amount) {
+        engine.placeBet(gameId, amount);
+    }
+
+    public synchronized void raise(int gameId, int amount) {
+        engine.raise(gameId, amount);
     }
 }

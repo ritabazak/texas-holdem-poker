@@ -18,6 +18,7 @@ public class LobbyResponse {
                         g.getId(),
                         g.getTitle(),
                         g.getAuthor(),
+                        g.isJoinable(),
                         g.isGameOn(),
                         g.getHandsCount(),
                         g.getBuyIn(),
