@@ -39,15 +39,19 @@ public class PlayerGameInfo extends PlayerInfo {
     public PlayerState getState() {
         return state;
     }
+
     public int getBuyIns() {
         return buyIns;
     }
+
     public int getHandsWon() {
         return handsWon;
     }
+
     public int getChips() {
         return chips;
     }
+
     public boolean isReady() {
         return ready;
     }

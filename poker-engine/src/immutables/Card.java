@@ -14,6 +14,7 @@ public class Card {
             this.c = c;
         }
     }
+
     public enum Suit {
         CLUBS('C'), DIAMONDS('D'), HEARTS('H'), SPADES('S'), NONE('?');
 

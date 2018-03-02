@@ -1,13 +1,10 @@
 package internals;
 
-import sun.security.krb5.Config;
 import xml_game_config.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLStreamReader;
-import java.io.File;
 import java.io.StringReader;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,20 +50,6 @@ public class GameConfig {
     private int handsCount;
     private List<ConfigPlayer> configPlayers;
 
-    public GameConfig(File f) {
-        try {
-            JAXBContext jaxb = JAXBContext.newInstance(GameDescriptor.class);
-            Unmarshaller un = jaxb.createUnmarshaller();
-
-            GameDescriptor descriptor = (GameDescriptor)un.unmarshal(f);
-
-            parseDescriptor(descriptor);
-        }
-        catch (JAXBException e) {
-            System.out.println(e.toString());
-        }
-    }
-
     public GameConfig(String xmlContent) {
         try {
             JAXBContext jaxb = JAXBContext.newInstance(GameDescriptor.class);
@@ -81,31 +64,36 @@ public class GameConfig {
         }
     }
 
-    public GameType getGameType() {
-        return gameType;
-    }
     public String getTitle() { return title; }
+
     public boolean isFixedBlinds() {
         return fixedBlinds;
     }
+
     public int getBigBlind() {
         return bigBlind;
     }
+
     public int getSmallBlind() {
         return smallBlind;
     }
+
     public int getBlindAddition() {
         return blindAddition;
     }
+
     public int getMaxTotalRounds() {
         return maxTotalRounds;
     }
+
     public int getBuyIn() {
         return buyIn;
     }
+
     public int getHandsCount() {
         return handsCount;
     }
+
     public int getPlayerCount() {
         if (gameType == GameType.BASIC) {
             return 4;
@@ -115,6 +103,7 @@ public class GameConfig {
         }
         return configPlayers.size();
     }
+
     public List<ConfigPlayer> getConfigPlayers() {
         return configPlayers;
     }

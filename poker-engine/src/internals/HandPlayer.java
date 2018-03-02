@@ -26,18 +26,23 @@ public class HandPlayer extends Player {
     public Card getFirstCard() {
         return firstCard;
     }
+
     public Card getSecondCard() {
         return secondCard;
     }
+
     public int getBet() {
         return bet;
     }
+
     public int getChips() {
         return chips;
     }
+
     public boolean isFolded() {
         return folded;
     }
+
     public int getChipsWon() { return chipsWon; }
 
     public void fold() {
@@ -79,6 +84,7 @@ public class HandPlayer extends Player {
     public boolean isWinner() {
         return winner;
     }
+
     public String getRanking() {
         return ranking;
     }

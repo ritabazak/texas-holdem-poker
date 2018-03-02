@@ -1,6 +1,5 @@
 package engine;
 
-import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +10,6 @@ import immutables.*;
 import internals.*;
 
 public class PokerEngine {
-    private Game game;
     private List<Game> games = new LinkedList<>();
     private List<Player> players = new LinkedList<>();
     private int playerId = 0;
@@ -20,60 +18,16 @@ public class PokerEngine {
     private Game getGame(int gameId) {
         return games.stream().filter(g -> g.getId() == gameId).findFirst().orElse(null);
     }
+
     private Player getPlayer(String username) {
         return players.stream().filter(p -> p.getName().equals(username)).findFirst().orElse(null);
     }
+
     public void addGame(String xmlContent, String author) throws InvalidBlindsException, InvalidHandsCountException, DuplicatePlayerIdException, DuplicateGameTitleException {
         GameConfig config = new GameConfig(xmlContent);
         config = verifyGameConfig(config);
         games.add(new Game(gameId++, config, author));
     }
-    public List<PlayerGameInfo> getGameStatus() {
-        return game.getGameStatus();
-    }
-    public int getHandsPlayed() {
-        return game.getHandsPlayed();
-    }
-    public int getMaxPot() {
-        return game.getMaxPot();
-    }
-    public List<Integer> getHumanIndices() {
-        return game.getHumanIndices();
-    }
-    public List<HandReplayData> getReplay() {
-        return game.getReplay();
-    }
-    public List<Card> getCommunityCards() {
-        return game.getCommunityCards();
-    }
-    public int getPot() {
-        return game.getPot();
-    }
-    public boolean isHandInProgress() {
-        return game.isHandInProgress();
-    }
-    public boolean isHumanTurn() {
-        return game.isHumanTurn();
-    }
-    public int getMaxBet() {
-        return game.getMaxBet();
-    }
-    public List<PlayerHandInfo> getWinners() {
-        return game.getWinners();
-    }
-    public boolean isBetActive() {
-        return game.isBetActive();
-    }
-    public int getSmallBlind() {
-        return game.getSmallBlind();
-    }
-    public int getBigBlind() {
-        return game.getBigBlind();
-    }
-    public int getPlayerIndexById(int id) {
-        return game.getPlayerIndexById(id);
-    }
-    public boolean canStartHand() { return game.canStartHand(); }
 
     private GameConfig verifyGameConfig(GameConfig config)
             throws InvalidHandsCountException,
@@ -107,14 +61,10 @@ public class PokerEngine {
         return config;
     }
 
-    /*public void startHand() {
-        if (game.startHand() == getHandsCount()) {
-            endGame();
-        }
-    }*/
     public void addBuyIn(int gameId, String username) {
         getGame(gameId).addBuyIn(username);
     }
+
     public void retirePlayer(int gameId, String username) {
         Game g = getGame(gameId);
 
@@ -125,28 +75,31 @@ public class PokerEngine {
             games.set(i, new Game(g.getId(), g.getConfig(), g.getAuthor()));
         }
     }
+
     public void fold(int gameId) {
         getGame(gameId).fold();
     }
+
     public void raise(int gameId, int raiseAmount) {
         getGame(gameId).raise(raiseAmount);
     }
+
     public void placeBet(int gameId, int bet) {
         getGame(gameId).placeBet(bet);
     }
+
     public void call(int gameId) {
         getGame(gameId).call();
     }
+
     public void check(int gameId) {
         getGame(gameId).check();
-    }
-    public void playComputerTurn() {
-        game.playComputerTurn();
     }
 
     private boolean isUsernameTaken(String username) {
         return players.stream().anyMatch(p -> p.getName().equals(username));
     }
+
     public void addPlayer(String username, Player.PlayerType type) throws UsernameAlreadyTakenException {
         if (isUsernameTaken(username)) {
             throw new UsernameAlreadyTakenException();

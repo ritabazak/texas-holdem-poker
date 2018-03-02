@@ -17,6 +17,5 @@ public class LogoutServlet extends HttpServlet {
         EngineManager manager = EngineManager.getEngineFromContext(getServletContext());
         manager.removePlayer((String)request.getSession().getAttribute("USERNAME"));
         request.getSession().invalidate();
-
     }
 }

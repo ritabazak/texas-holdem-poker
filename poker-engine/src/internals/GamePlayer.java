@@ -6,11 +6,6 @@ public class GamePlayer extends Player {
     private int chips;
     private boolean ready = false;
 
-    public GamePlayer(int id, String name, Player.PlayerType type, int buyIn) {
-        super(id, name, type);
-        chips = buyIn;
-    }
-
     public GamePlayer(Player player, int buyIn) {
         super(player);
         chips = buyIn;

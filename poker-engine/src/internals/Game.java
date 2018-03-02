@@ -40,15 +40,19 @@ public class Game {
     public boolean isGameOn() {
         return gameOn || isHandInProgress();
     }
+
     public int getBuyIn() {
         return config.getBuyIn();
     }
+
     public int getInitialSmallBlind() {
         return config.getSmallBlind();
     }
+
     public int getInitialBigBlind() {
         return config.getBigBlind();
     }
+
     public int getHandsCount() {
         return config.getHandsCount();
     }
@@ -56,38 +60,39 @@ public class Game {
     public String getTitle() {
         return title;
     }
+
     public String getAuthor() {
         return author;
     }
+
     public int getSeats() {
         return seats;
     }
+
     public int getPlayerCount() {
         return players.size();
     }
+
     public boolean isFixedBlinds() {
         return config.isFixedBlinds();
     }
+
     public int getBlindAddition() {
         return isFixedBlinds()? 0: config.getBlindAddition();
     }
+
     public int getMaxTotalRoundsBlinds() {
         return isFixedBlinds()? 0: config.getMaxTotalRounds();
     }
+
     protected int getSmallIndex() {
         return hand == null? (dealer + 1) % players.size(): hand.getSmallIndex();
     }
+
     protected int getBigIndex() {
         return hand == null? (dealer + 2) % players.size(): hand.getBigIndex();
     }
-    public int getHandsPlayed() {
-        return handIndex;
-    }
-    public int getMaxPot() {
-        return players.stream()
-                .mapToInt(GamePlayer::getBuyIns)
-                .sum() * config.getBuyIn();
-    }
+
     public List<PlayerGameInfo> getGameStatus() {
         return IntStream.range(0, players.size())
                 .mapToObj(i ->
@@ -99,16 +104,11 @@ public class Game {
                         )
                 ).collect(toList());
     }
-    public List<Integer> getHumanIndices() {
-        return IntStream.range(0, players.size())
-                .filter(i -> players.get(i).getType() == Player.PlayerType.HUMAN)
-                .boxed()
-                .collect(toList());
-    }
 
     public void addBuyIn(String username) {
         getPlayer(username).addBuyIn(config.getBuyIn());
     }
+
     public void retirePlayer(String username) {
         players.remove(getPlayer(username));
 
@@ -146,64 +146,26 @@ public class Game {
         }
     }
 
-    public List<HandReplayData> getReplay() {
-        return hand.getReplayData();
-    }
-    public List<Card> getCommunityCards() {
-        return hand.getCommunityCards(false);
-    }
-    public int getPot() {
-        return hand.getPot();
-    }
     public boolean isHandInProgress() {
         return hand != null && hand.handInProgress();
     }
-    public boolean isHumanTurn() {
-        return hand.isHumanTurn();
-    }
-    public int getMaxBet() {
-        return hand.getMaxBet();
-    }
-    public List<PlayerHandInfo> getWinners() {
-        return hand.getWinners();
-    }
-    public boolean isBetActive() {
-        return hand.isBetActive();
-    }
-    public int getSmallBlind() {
-        return hand != null? hand.getSmallBlind(): smallBlind;
-    }
-    public int getBigBlind() {
-        return hand != null? hand.getBigBlind(): bigBlind;
-    }
-    public int getPlayerIndexById(int id) {
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getId() == id) {
-                return i;
-            }
-        }
 
-        return -1;
-    }
-    public boolean canStartHand() {
-        return players.stream().filter(player -> player.getChips() >= bigBlind).count() >= 2;
-    }
-
-    public void playComputerTurn() {
-        hand.playComputerTurn();
-    }
     public void fold() {
         hand.fold();
     }
+
     public void placeBet(int bet) {
         hand.placeBet(bet);
     }
+
     public void raise(int raiseAmount) {
         hand.raise(raiseAmount);
     }
+
     public void call() {
         hand.call();
     }
+
     public void check() {
         hand.check();
     }

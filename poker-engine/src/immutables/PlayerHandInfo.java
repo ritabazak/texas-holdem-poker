@@ -56,26 +56,34 @@ public class PlayerHandInfo extends PlayerInfo {
     public int getBet() {
         return bet;
     }
+
     public int getChips() {
         return chips;
     }
+
     public PlayerState getState() {
         return state;
     }
+
     public Card getFirstCard() {
         return firstCard;
     }
+
     public Card getSecondCard() {
         return secondCard;
     }
+
     public boolean isCurrent() {
         return current;
     }
+
     public String getRanking() {
         return ranking;
     }
+
     public boolean isFolded() {
         return folded;
     }
+
     public int getChipsWon() { return chipsWon; }
 }

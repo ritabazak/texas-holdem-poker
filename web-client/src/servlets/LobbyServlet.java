@@ -66,6 +66,5 @@ public class LobbyServlet extends HttpServlet {
             out.print(gson.toJson(res));
             out.flush();
         }
-
     }
 }
