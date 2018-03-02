@@ -10,6 +10,8 @@ public class HandPlayerResponse extends PlayerResponse {
     private final String secondCard;
     private final boolean current;
     private final boolean folded;
+    private final String ranking;
+    private final int chipsWon;
 
     public HandPlayerResponse(int id,
                               String name,
@@ -20,7 +22,9 @@ public class HandPlayerResponse extends PlayerResponse {
                               String firstCard,
                               String secondCard,
                               boolean current,
-                              boolean folded) {
+                              boolean folded,
+                              String ranking,
+                              int chipsWon) {
         super(id, name, type);
         this.bet = bet;
         this.chips = chips;
@@ -29,5 +33,7 @@ public class HandPlayerResponse extends PlayerResponse {
         this.secondCard = secondCard;
         this.current = current;
         this.folded = folded;
+        this.ranking = ranking;
+        this.chipsWon = chipsWon;
     }
 }

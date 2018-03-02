@@ -7,6 +7,7 @@ public class GamePlayerResponse extends PlayerResponse {
     private final int handsWon;
     private final int chips;
     private final String state;
+    private final boolean ready;
 
     public GamePlayerResponse(int id,
                               String name,
@@ -14,11 +15,13 @@ public class GamePlayerResponse extends PlayerResponse {
                               int buyIns,
                               int handsWon,
                               int chips,
-                              String state) {
+                              String state,
+                              boolean ready) {
         super(id, name, type);
         this.buyIns = buyIns;
         this.handsWon = handsWon;
         this.chips = chips;
         this.state = state;
+        this.ready = ready;
     }
 }

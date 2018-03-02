@@ -6,7 +6,10 @@ public class GameResponse {
     private final int id;
     private final String title;
     private final String author;
+    private final boolean joinable;
     private final boolean gameOn;
+    private final boolean handInProgress;
+    private final int handIndex;
     private final int handsCount;
     private final int buyIn;
     private final int seats;
@@ -15,11 +18,13 @@ public class GameResponse {
     private final int initialBigBlind;
     private final List<GamePlayerResponse> players;
 
-
     GameResponse(int id,
                  String title,
                  String author,
+                 boolean joinable,
                  boolean gameOn,
+                 boolean handInProgress,
+                 int handIndex,
                  int handsCount,
                  int buyIn,
                  int seats,
@@ -30,7 +35,10 @@ public class GameResponse {
         this.id = id;
         this.title = title;
         this.author = author;
+        this.joinable = joinable;
         this.gameOn = gameOn;
+        this.handInProgress = handInProgress;
+        this.handIndex = handIndex;
         this.handsCount = handsCount;
         this.buyIn = buyIn;
         this.seats = seats;
