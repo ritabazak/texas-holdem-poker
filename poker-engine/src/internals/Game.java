@@ -21,6 +21,7 @@ public class Game {
     private int smallBlind;
     private int bigBlind;
     private Hand hand;
+    private List<ChatMessage> chat = new LinkedList<>();
 
     public Game(int id, GameConfig config, String author) {
         this.id = id;
@@ -209,5 +210,13 @@ public class Game {
 
     public boolean isJoinable() {
         return handIndex == 0 && !gameOn;
+    }
+
+    public void addMessage(String author, String message) {
+        chat.add(new ChatMessage(author, message));
+    }
+
+    public List<ChatMessage> getChat() {
+        return chat;
     }
 }

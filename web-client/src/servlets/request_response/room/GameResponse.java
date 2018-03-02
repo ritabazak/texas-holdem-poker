@@ -17,6 +17,7 @@ public class GameResponse {
     private final int initialSmallBlind;
     private final int initialBigBlind;
     private final List<GamePlayerResponse> players;
+    private final List<ChatMessageResponse> chat;
 
     GameResponse(int id,
                  String title,
@@ -31,7 +32,8 @@ public class GameResponse {
                  int playerCount,
                  int initialSmallBlind,
                  int initialBigBlind,
-                 List<GamePlayerResponse> players) {
+                 List<GamePlayerResponse> players,
+                 List<ChatMessageResponse> chat) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -46,5 +48,6 @@ public class GameResponse {
         this.initialSmallBlind = initialSmallBlind;
         this.initialBigBlind = initialBigBlind;
         this.players = players;
+        this.chat = chat;
     }
 }

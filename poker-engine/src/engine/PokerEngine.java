@@ -34,8 +34,6 @@ public class PokerEngine {
             InvalidBlindsException,
             DuplicatePlayerIdException, DuplicateGameTitleException {
 
-        //TODO: add tests for Project3
-        //TODO: verify gameConfig.getGameType() == DYNAMIC_MULTIPLAYER
         if (config.getHandsCount() % config.getPlayerCount() != 0) {
             throw new InvalidHandsCountException();
         }
@@ -112,7 +110,10 @@ public class PokerEngine {
     }
 
     public List<GameInfo> getGames() {
-        return games.stream().map(GameInfo::new).collect(Collectors.toList());
+        return games.stream()
+                .map(Game::getId)
+                .map(this::getGameInfo)
+                .collect(Collectors.toList());
     }
 
     public void removePlayer(String name) {
@@ -133,5 +134,9 @@ public class PokerEngine {
 
     public void setPlayerReady(int gameId, String username, boolean ready) {
         getGame(gameId).setPlayerReady(username, ready);
+    }
+
+    public void addMessage(int gameId, String username, String message) {
+        getGame(gameId).addMessage(username, message);
     }
 }

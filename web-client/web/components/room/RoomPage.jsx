@@ -24,6 +24,7 @@ class RoomPage extends React.Component {
         this.bet = this.bet.bind(this);
         this.raise = this.raise.bind(this);
         this.leaveGame = this.leaveGame.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
     }
 
     componentDidMount() {
@@ -133,6 +134,14 @@ class RoomPage extends React.Component {
         Http.post('api/room', {amount}, {
             id: this.gameId,
             method: 'RAISE'
+        })
+            .then(this.refreshRoomInfo);
+    }
+
+    sendMessage(message) {
+        Http.post('api/room', {message}, {
+            id: this.gameId,
+            method: 'ADD_MESSAGE'
         })
             .then(this.refreshRoomInfo);
     }
@@ -316,13 +325,18 @@ class RoomPage extends React.Component {
 
                 <div className="page-body flex-row flex">
                     <div className="left-sidebar flex-column">
-                        <div className="flex">
+                        <div className="flex padding-b10" style={{'border-bottom': '2px solid grey'}}>
                             <PlayerList players={game.players} currentUser={this.selfGamePlayer} />
                         </div>
 
-                        <div className="margin-b10 text-center">
+                        <div className="text-center margin-t10 margin-b10">
                             <div>Small Blind: {(hand && hand.smallBlind) || game.initialSmallBlind}</div>
                             <div>Big Blind: {(hand && hand.bigBlind) || game.initialBigBlind}</div>
+                        </div>
+
+                        <div className="flex padding-b10 margin-l10 padding-t10"
+                             style={{'border-top': '2px solid grey'}}>
+                            <ChatBox chat={game.chat} onMessage={this.sendMessage} />
                         </div>
                     </div>
 
@@ -334,7 +348,6 @@ class RoomPage extends React.Component {
                         {this.renderBottomMenu()}
                     </div>
                 </div>
-
             </div>
         );
     }

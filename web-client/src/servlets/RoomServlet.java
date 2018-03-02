@@ -5,6 +5,7 @@ import managers.EngineManager;
 import servlets.request_response.APIResponse;
 import servlets.request_response.EmptyObject;
 import servlets.request_response.room.BetRequest;
+import servlets.request_response.room.ChatRequest;
 import servlets.request_response.room.RoomResponse;
 
 import javax.servlet.ServletException;
@@ -25,7 +26,8 @@ public class RoomServlet extends HttpServlet {
         int gameId = Integer.valueOf(request.getParameter("id"));
 
         Gson gson = new Gson();
-        BetRequest req;
+        BetRequest betRequest;
+        ChatRequest chatRequest;
 
         try {
             switch (request.getParameter("method")) {
@@ -54,12 +56,16 @@ public class RoomServlet extends HttpServlet {
                     manager.call(gameId);
                     break;
                 case "BET":
-                    req = gson.fromJson(request.getReader(), BetRequest.class);
-                    manager.bet(gameId, req.amount);
+                    betRequest = gson.fromJson(request.getReader(), BetRequest.class);
+                    manager.bet(gameId, betRequest.amount);
                     break;
                 case "RAISE":
-                    req = gson.fromJson(request.getReader(), BetRequest.class);
-                    manager.raise(gameId, req.amount);
+                    betRequest = gson.fromJson(request.getReader(), BetRequest.class);
+                    manager.raise(gameId, betRequest.amount);
+                    break;
+                case "ADD_MESSAGE":
+                    chatRequest = gson.fromJson(request.getReader(), ChatRequest.class);
+                    manager.addMessage(gameId, username, chatRequest.message);
                     break;
             }
 

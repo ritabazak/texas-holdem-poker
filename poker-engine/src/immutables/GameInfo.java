@@ -22,6 +22,7 @@ public class GameInfo {
     private final int blindAddition;
     private final int maxTotalRoundsBlinds;
     private final List<PlayerGameInfo> players;
+    private final List<ChatMessage> chat;
 
     public GameInfo(Game game) {
         id = game.getId();
@@ -41,6 +42,7 @@ public class GameInfo {
         blindAddition = game.getBlindAddition();
         maxTotalRoundsBlinds = game.getMaxTotalRoundsBlinds();
         players = game.getGameStatus();
+        chat = game.getChat();
     }
 
     public int getId() {
@@ -109,5 +111,9 @@ public class GameInfo {
 
     public boolean isJoinable() {
         return joinable;
+    }
+
+    public List<ChatMessage> getChat() {
+        return chat;
     }
 }

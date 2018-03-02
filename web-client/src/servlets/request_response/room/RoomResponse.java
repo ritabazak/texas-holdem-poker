@@ -36,6 +36,10 @@ public class RoomResponse {
                         p.getChips(),
                         p.getState().toString(),
                         p.isReady()
+                )).collect(Collectors.toList()),
+                game.getChat().stream().map(c -> new ChatMessageResponse(
+                        c.getAuthor(),
+                        c.getMessage()
                 )).collect(Collectors.toList())
         );
 

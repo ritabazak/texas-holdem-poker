@@ -20,6 +20,7 @@
 }
 
 footer {
+    margin-top: 5px;
     padding: 0 5px 10px 5px;
 }
 
@@ -34,7 +35,8 @@ footer button {
     grid-template-rows: 1fr 1fr 1fr;
     grid-gap: 5px;
     padding: 5px;
-
+    margin: 0 5px;
+    
     color: #ffffff;
     text-align: center;
 
@@ -173,4 +175,21 @@ footer button {
 .game-table .current-player {
     border: 1px solid black;
     border-radius: 20px;
+}
+
+.chat-box-wrapper {
+    height: 100%;
+    position: relative;
+}
+
+.chat-box-wrapper .chat-box {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.chat-box-wrapper .chat-box .chat-list {
+    overflow-y: auto;
 }

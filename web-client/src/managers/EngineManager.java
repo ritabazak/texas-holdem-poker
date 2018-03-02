@@ -89,4 +89,8 @@ public class EngineManager {
     public synchronized void raise(int gameId, int amount) {
         engine.raise(gameId, amount);
     }
+
+    public synchronized void addMessage(int gameId, String username, String message) {
+        engine.addMessage(gameId, username, message);
+    }
 }
