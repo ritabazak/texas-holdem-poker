@@ -23,7 +23,13 @@ public class PokerEngine {
         return players.stream().filter(p -> p.getName().equals(username)).findFirst().orElse(null);
     }
 
-    public void addGame(String xmlContent, String author) throws InvalidBlindsException, InvalidHandsCountException, DuplicatePlayerIdException, DuplicateGameTitleException {
+    public void addGame(String xmlContent, String author)
+            throws InvalidBlindsException,
+            InvalidHandsCountException,
+            DuplicatePlayerIdException,
+            DuplicateGameTitleException,
+            UnsupportedGameTypeException {
+
         GameConfig config = new GameConfig(xmlContent);
         config = verifyGameConfig(config);
         games.add(new Game(gameId++, config, author));
@@ -32,7 +38,13 @@ public class PokerEngine {
     private GameConfig verifyGameConfig(GameConfig config)
             throws InvalidHandsCountException,
             InvalidBlindsException,
-            DuplicatePlayerIdException, DuplicateGameTitleException {
+            DuplicatePlayerIdException,
+            DuplicateGameTitleException,
+            UnsupportedGameTypeException {
+
+        if (config.getGameType() != GameConfig.GameType.DYNAMIC_MULTIPLAYER) {
+            throw new UnsupportedGameTypeException();
+        }
 
         if (config.getHandsCount() % config.getPlayerCount() != 0) {
             throw new InvalidHandsCountException();
@@ -53,9 +65,11 @@ public class PokerEngine {
                 throw new DuplicatePlayerIdException();
             }
         }
-         if (games.stream().anyMatch(g -> g.getTitle().equals(config.getTitle()))) {
+
+        if (games.stream().anyMatch(g -> g.getTitle().equals(config.getTitle()))) {
             throw new DuplicateGameTitleException();
-         }
+        }
+
         return config;
     }
 

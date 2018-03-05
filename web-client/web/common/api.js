@@ -4,7 +4,8 @@ const ERRORS = {
     'INVALID_HANDS_COUNT': 'There must be enough hands for all players to play an equal amount of hands!',
     'INVALID_BLINDS': 'Big blind must be larger than the small blind!',
     'GAME_ALREADY_IN_PROGRESS': 'Game already in progress!',
-    'GAME_FULL': 'Game full!'
+    'GAME_FULL': 'Game full!',
+    'UNSUPPORTED_GAME_TYPE': 'Unsupported game type!'
 };
 
 class Http {

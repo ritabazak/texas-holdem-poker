@@ -38,7 +38,12 @@ public class EngineManager {
         return engine.getGames();
     }
 
-    public synchronized void addGame(String xmlContent, String username) throws InvalidBlindsException, InvalidHandsCountException, DuplicatePlayerIdException, DuplicateGameTitleException {
+    public synchronized void addGame(String xmlContent, String username)
+            throws InvalidBlindsException,
+            InvalidHandsCountException,
+            DuplicatePlayerIdException,
+            DuplicateGameTitleException,
+            UnsupportedGameTypeException {
         engine.addGame(xmlContent, username);
     }
 

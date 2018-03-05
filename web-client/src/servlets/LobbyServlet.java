@@ -58,7 +58,7 @@ public class LobbyServlet extends HttpServlet {
             manager.addGame(req.xmlContent, (String)request.getSession().getAttribute("USERNAME"));
             res = APIResponse.newEmptyResponse();
         }
-        catch (Exception e){
+        catch (Exception e) {
             res = new APIResponse<>(e.getMessage());
         }
 

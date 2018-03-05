@@ -104,6 +104,10 @@ public class GameConfig {
         return configPlayers.size();
     }
 
+    public GameType getGameType() {
+        return gameType;
+    }
+
     public List<ConfigPlayer> getConfigPlayers() {
         return configPlayers;
     }
